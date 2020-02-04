@@ -1,14 +1,128 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content id="content" class="ion-padding" *ngIf="checkedStatus">
+  <ion-row class="ion-justify-content-center" style="margin-top: 1rem;">
+    <ion-col size="4">
+      <img src="../../assets/logo.svg" (click)="testLogin()">
+    </ion-col>
+  </ion-row>
 
-<ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+  <ion-row class="ion-justify-content-center" style="margin-top: 20%;">
+    <ion-text style="color: black; font-weight: bolder; font-size: 1.5rem" class="ion-text-center">
+      Ready to ACCESS?
+    </ion-text>
+  </ion-row>
+
+  <ion-row class="ion-justify-content-center" style="margin-top: 1%">
+    <ion-text style="color: rgb(92, 92, 92); font-size: 0.8rem;" class="ion-text-center">ACCESS is a Centrally Controlled Extensible Security System</ion-text>
+  </ion-row>
+
+  <div class="ion-justify-content-center" style="margin-top: 5%;" *ngIf="!showRegistrationForm">
+
+    <form [formGroup]="loginForm">
+      <ion-row class="ion-justify-content-center">
+        <ion-text color="danger" class="ion-text-center">{{ error }}</ion-text>
+      </ion-row>
+
+      <ion-item>
+        <ion-label position="stacked" style="font-size: 1rem; margin-top: 5%">Username</ion-label>
+        <ion-input type="text" formControlName="username"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked" style="font-size: 1rem">Password</ion-label>
+        <ion-input type="password"  formControlName="password" ></ion-input>
+      </ion-item>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="10">
+          <ion-button class="ion-justify-content-center" size="large" expand="block"
+            style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem; margin-top: 5%"
+            (click)="checkLoginDetails()" [attr.disabled]="loginForm.invalid ? 'true' : 'false'">
+            Login
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="10">
+        <ion-button (click)="toggleRegistrationForm()" class="ion-justify-content-center" size="large" expand="block" style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem;">
+          Sign Up
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-justify-content-center" style="margin-top: 5%">
+      <ion-text style="text-decoration: underline; color: rgba(9, 0, 161,1); font-weight: bold; font-size: 0.8rem">
+        Forgot Password? Click Here
+      </ion-text>
+    </ion-row>
+  
+  </div>
+
+  <div class="ion-justify-content-center" style="margin-top: 5%;" *ngIf="showRegistrationForm">
+  
+    <form [formGroup]="registrationForm">
+      <ion-row class="ion-justify-content-center">
+        <ion-text color="danger" class="ion-text-center">{{ error }}</ion-text>
+      </ion-row>
+
+      <ion-item style="background: transparent;">
+        <ion-label position="stacked" style="font-size: 1rem; margin-top: 5%">Username</ion-label>
+        <ion-input type="text" formControlName="username"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!registrationForm.controls.username.valid && registrationForm.controls.username.dirty">
+        Username must contain only alphanumeric characters.
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked" style="font-size: 1rem">Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!registrationForm.controls.password.valid && registrationForm.controls.password.dirty">
+        Password should contain at least 8 characters, an upper-case letter, a lower-case letter, a digit and a special symbol
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked" style="font-size: 1rem">Confirm Password</ion-label>
+        <ion-input type="password" formControlName="confirmPassword"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!registrationForm.controls.confirmPassword.valid && registrationForm.controls.confirmPassword.dirty">
+        Passwords don't match
+      </ion-item>
+
+      <ion-item style="background: transparent;">
+        <ion-label position="stacked" style="font-size: 1rem">Email</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!registrationForm.controls.email.valid && registrationForm.controls.email.dirty">
+        Enter a valid email ID.
+      </ion-item>
+
+      <ion-item style="background: transparent;">
+        <ion-label position="stacked" style="font-size: 1rem">Phone Number</ion-label>
+        <ion-input type="number" formControlName="number"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!registrationForm.controls.number.valid && registrationForm.controls.number.dirty">
+        Enter a valid phone number
+      </ion-item>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="10">
+          <ion-button class="ion-justify-content-center" size="large" expand="block"
+            style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem; margin-top: 5%"
+            (click)="checkRegistrationDetails()" [attr.disabled]="registrationForm.invalid ? 'true' : 'false'">
+            Sign Up
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+  
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="10">
+        <ion-button (click)="toggleRegistrationForm()" class="ion-justify-content-center" size="large" expand="block" style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem;">
+          Login
+        </ion-button>
+      </ion-col>
+    </ion-row>
   </div>
 </ion-content>

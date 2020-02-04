@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "318592327316",
+    "firebase_url": "https://access-c8737.firebaseio.com",
+    "project_id": "access-c8737",
+    "storage_bucket": "access-c8737.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318592327316:android:d0fd66f374b32611001e81",
+        "android_client_info": {
+          "package_name": "com.iterators.access"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318592327316-81m1i804q28qvr7cb51g6l40dsctj9dm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNlkwN9LUDFUDQvThLaUZ5w_Z247PrMro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318592327316-81m1i804q28qvr7cb51g6l40dsctj9dm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

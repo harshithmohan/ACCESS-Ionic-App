@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Plugins, PushNotification, PushNotificationToken, PushNotificationActionPerformed, StatusBarStyle } from '@capacitor/core';
+import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
+import { NavigationBarPlugin } from 'capacitor-navigationbar';
+
+const { PushNotifications, StatusBar, NavigationBar } = Plugins;
+
 
 @Component({
   selector: 'app-root',
@@ -12,16 +17,42 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private storage: Storage,
+    private router: Router
   ) {
     this.initializeApp();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      NavigationBar.setBackgroundColor({ color: '#3880ff' });
+      StatusBar.setBackgroundColor({ color: '#3880ff' });
+      PushNotifications.register();
+      PushNotifications.addListener('registration', (token: PushNotificationToken) => {
+        console.log(token.value);
+        this.storage.get('fcmToken')
+        .then((storedToken: string) => {
+          if (storedToken !== token.value) {
+            this.storage.clear();
+            this.storage.set('fcmToken', token.value);
+            this.router.navigate(['/home']);
+          }
+        })
+        .catch(() => {
+          console.log('Setting token');
+          this.storage.set('fcmToken', token.value);
+        });
+      });
+      PushNotifications.addListener('pushNotificationReceived', (notification: PushNotification) => {
+        console.log('Push received: ');
+        console.log(notification);
+      }
+      );
+      PushNotifications.addListener('pushNotificationActionPerformed', (notification: PushNotificationActionPerformed) => {
+        console.log('Push action performed: ');
+        console.log(notification);
+      }
+      );
     });
   }
 }

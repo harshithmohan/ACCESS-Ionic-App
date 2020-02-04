@@ -1,0 +1,150 @@
+<ion-header>
+  <ion-toolbar color="primary" mode="ios">
+    <ion-title>My Locks</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false" menu="menu"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content id="content">
+
+  <ion-refresher slot="fixed" (ionRefresh)="refreshLocks($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card *ngFor="let lockId of lockSetFav" [attr.color]="lockId === expandedLockId ? 'dark' : null">
+    <ion-card-header>
+      <ion-row>
+        <ion-col size="2" (click)="expandLock(lockId)">
+          <ion-icon name="key" size="large"></ion-icon>
+        </ion-col>
+        <ion-col size="9" (click)="expandLock(lockId)">
+          <ion-row>
+            <ion-card-title>{{ locks[lockId]['alias'] }}</ion-card-title>
+          </ion-row>
+          <ion-row>
+            <ion-card-subtitle>{{ locks[lockId]['address'] }}</ion-card-subtitle>
+          </ion-row>
+        </ion-col>
+        <ion-col size="1" (click)="favouriteLock(lockId)">
+          <ion-icon name="star" size="large" color="warning"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-card-header>
+  
+    <ion-card-content *ngIf="lockId === expandedLockId" style="padding: 0;" [@inOutAnimation]>
+      <ion-row style="padding: 0">
+        <ion-col size="6" style="padding: 0;">
+          <ion-item color="danger" (click)="lock(lockId)" button>
+            <ion-icon name="lock" slot="start"></ion-icon>
+            <ion-label>Lock</ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" style="padding: 0;">
+          <ion-item color="success" (click)="unlock(lockId)" button>
+            <ion-icon name="unlock" slot="start"></ion-icon>
+            <ion-label>Unlock</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-item lines="full" color="primary" (click)="grantPermission(locks[lockId])" button>
+        <ion-icon name="finger-print" slot="start"></ion-icon>
+        <ion-label>Grant Permission</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="tertiary">
+        <ion-icon name="analytics" slot="start"></ion-icon>
+        <ion-label>View Logs</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="secondary">
+        <ion-icon name="create" slot="start"></ion-icon>
+        <ion-label>Edit</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="danger" (click)="deleteLock(lockId)" button>
+        <ion-icon name="trash" slot="start"></ion-icon>
+        <ion-label>Delete</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngFor="let lockId of lockSet" [attr.color]="lockId === expandedLockId ? 'dark' : null">
+    <ion-card-header>
+      <ion-row>
+        <ion-col size="2" (click)="expandLock(lockId)">
+          <ion-icon name="key" size="large"></ion-icon>
+        </ion-col>
+        <ion-col size="9" (click)="expandLock(lockId)">
+          <ion-row><ion-card-title>{{ locks[lockId]['alias'] }}</ion-card-title></ion-row>
+          <ion-row><ion-card-subtitle>{{ locks[lockId]['address'] }}</ion-card-subtitle></ion-row>
+        </ion-col>
+        <ion-col size="1" (click)="favouriteLock(lockId)">
+          <ion-icon name="star-outline" size="large"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-card-header>
+  
+    <ion-card-content *ngIf="lockId === expandedLockId" style="padding: 0;" [@inOutAnimation]>
+      <ion-row style="padding: 0">
+        <ion-col size="6" style="padding: 0;">
+          <ion-item color="danger" (click)="lock(lockId)" button>
+            <ion-icon name="lock" slot="start"></ion-icon>
+            <ion-label>Lock</ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" style="padding: 0;">
+          <ion-item color="success" (click)="unlock(lockId)" button>
+            <ion-icon name="unlock" slot="start"></ion-icon>
+            <ion-label>Unlock</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-item lines="full" color="primary" (click)="grantPermission(locks[lockId])" button>
+        <ion-icon name="finger-print" slot="start"></ion-icon>
+        <ion-label>Grant Permission</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="tertiary">
+        <ion-icon name="analytics" slot="start"></ion-icon>
+        <ion-label>View Logs</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="secondary">
+        <ion-icon name="create" slot="start"></ion-icon>
+        <ion-label>Edit</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="danger" (click)="deleteLock(lockId)" button>
+        <ion-icon name="trash" slot="start"></ion-icon>
+        <ion-label>Delete</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngFor="let lockId of lockSetInvalid" [attr.color]="lockId === expandedLockId ? 'dark' : null">
+    <ion-card-header (click)="expandLock(lockId)">
+      <ion-row>
+        <ion-col size="2">
+          <ion-icon name="key" size="large"></ion-icon>
+        </ion-col>
+        <ion-col size="10">
+          <ion-card-subtitle>Please set alias and address for this lock. (Lock ID: {{ lockId }})</ion-card-subtitle>
+        </ion-col>
+      </ion-row>
+    </ion-card-header>
+  
+    <ion-card-content *ngIf="lockId === expandedLockId" style="padding: 0;" [@inOutAnimationInvalid]>
+      <ion-item lines="full" color="secondary">
+        <ion-icon name="create" slot="start"></ion-icon>
+        <ion-label>Edit</ion-label>
+      </ion-item>
+      <ion-item lines="full" color="danger" (click)="deleteLock(lockId)" button>
+        <ion-icon name="trash" slot="start"></ion-icon>
+        <ion-label>Delete</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="tertiary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  
+</ion-content>

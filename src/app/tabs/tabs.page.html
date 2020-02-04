@@ -1,0 +1,51 @@
+<ion-tabs>
+
+  <ion-tab-bar color="primary" slot="bottom">
+
+    <ion-tab-button tab="my-locks">
+      <ion-icon name="construct"></ion-icon>
+      <ion-label>My Locks</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="other-locks">
+      <ion-icon name="md-log-in"></ion-icon>
+      <ion-label>Other Locks</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+
+</ion-tabs>
+
+<ion-menu side="start" menuId="menu" content-id="content">
+  <ion-header>
+    <ion-toolbar color="primary" mode="ios">
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-center">Smart Lock</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-row class="ion-justify-content-center ion-margin-top" style="height: 15%">
+      <img src="/assets/logo.svg" alt="" style="height: 100%" />
+    </ion-row>
+    <ion-list>
+      <ion-item button lines="none" class="ion-margin-top" (click)="gotoLogs()">
+        <ion-icon name="analytics" slot="start"></ion-icon>
+        <ion-label>View Logs</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="gotoHowToUse()">
+        <ion-icon name="help" slot="start"></ion-icon>
+        <ion-label>How to Use</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="gotoSettings()">
+        <ion-icon name="settings" slot="start"></ion-icon>
+        <ion-label>Settings</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="logout()">
+        <ion-icon name="log-out" slot="start"></ion-icon>
+        <ion-label>Logout</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
