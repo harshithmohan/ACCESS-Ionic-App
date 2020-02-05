@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
-import { MenuController, ToastController } from '@ionic/angular';
+import { MenuController, AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { LockService } from '../services/lock.service';
 
 const { App } = Plugins;
 
@@ -13,13 +14,12 @@ const { App } = Plugins;
 })
 export class TabsPage implements OnInit {
 
-  backPressed = false;
-
   constructor(
     private router: Router,
     private menuController: MenuController,
-    private toastController: ToastController,
-    private storage: Storage
+    private alertController: AlertController,
+    private storage: Storage,
+    private lockService: LockService
   ) { }
 
   ngOnInit() {
@@ -27,25 +27,29 @@ export class TabsPage implements OnInit {
       this.menuController.isOpen('menu').then(open => {
         if (open) {
           this.menuController.close('menu');
-        } else if (this.backPressed) {
-          App.exitApp();
         } else {
-          this.presentToast();
-          this.backPressed = true;
-          setTimeout(() => {
-            this.backPressed = false;
-          }, 5000);
+          this.presentAlert();
         }
       });
     });
   }
 
-  async presentToast() {
-    const toast = await this.toastController.create({
-      message: 'Press back again to exit the app!',
-      duration: 2000
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Confirm!',
+      message: 'Do you want to close the app?',
+      buttons: [
+        {
+          text: 'Cancel'
+        }, {
+          text: 'Close',
+          handler: () => {
+            App.exitApp();
+          }
+        }
+      ]
     });
-    toast.present();
+    await alert.present();
   }
 
   gotoHowToUse() {
@@ -61,7 +65,7 @@ export class TabsPage implements OnInit {
   }
 
   logout() {
-    // implement
+    this.lockService.logout();
     this.storage.clear();
     this.router.navigateByUrl('/home');
   }

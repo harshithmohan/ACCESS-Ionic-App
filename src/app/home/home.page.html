@@ -1,4 +1,4 @@
-<ion-content id="content" class="ion-padding" *ngIf="checkedStatus">
+<ion-content id="content" class="ion-padding" *ngIf="checkedStatus" color="dark">
   <ion-row class="ion-justify-content-center" style="margin-top: 1rem;">
     <ion-col size="4">
       <img src="../../assets/logo.svg" (click)="testLogin()">
@@ -6,28 +6,28 @@
   </ion-row>
 
   <ion-row class="ion-justify-content-center" style="margin-top: 20%;">
-    <ion-text style="color: black; font-weight: bolder; font-size: 1.5rem" class="ion-text-center">
+    <ion-text style="font-weight: bolder; font-size: 1.5rem" class="ion-text-center">
       Ready to ACCESS?
     </ion-text>
   </ion-row>
 
   <ion-row class="ion-justify-content-center" style="margin-top: 1%">
-    <ion-text style="color: rgb(92, 92, 92); font-size: 0.8rem;" class="ion-text-center">ACCESS is a Centrally Controlled Extensible Security System</ion-text>
+    <ion-text style="font-size: 0.8rem;" class="ion-text-center">ACCESS is a Centrally Controlled Extensible Security System</ion-text>
   </ion-row>
 
   <div class="ion-justify-content-center" style="margin-top: 5%;" *ngIf="!showRegistrationForm">
 
     <form [formGroup]="loginForm">
-      <ion-row class="ion-justify-content-center">
+      <ion-row class="ion-justify-content-center" *ngIf="error !== null">
         <ion-text color="danger" class="ion-text-center">{{ error }}</ion-text>
       </ion-row>
 
-      <ion-item>
-        <ion-label position="stacked" style="font-size: 1rem; margin-top: 5%">Username</ion-label>
+      <ion-item color="light">
+        <ion-label position="stacked" style="font-size: 1rem;">Username</ion-label>
         <ion-input type="text" formControlName="username"></ion-input>
       </ion-item>
 
-      <ion-item>
+      <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem">Password</ion-label>
         <ion-input type="password"  formControlName="password" ></ion-input>
       </ion-item>
@@ -35,7 +35,7 @@
       <ion-row class="ion-justify-content-center">
         <ion-col size="10">
           <ion-button class="ion-justify-content-center" size="large" expand="block"
-            style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem; margin-top: 5%"
+            style="--border-radius: 100px; font-size: 0.8rem; margin-top: 5%" color="primary"
             (click)="checkLoginDetails()" [attr.disabled]="loginForm.invalid ? 'true' : 'false'">
             Login
           </ion-button>
@@ -45,14 +45,14 @@
 
     <ion-row class="ion-justify-content-center">
       <ion-col size="10">
-        <ion-button (click)="toggleRegistrationForm()" class="ion-justify-content-center" size="large" expand="block" style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem;">
+        <ion-button (click)="toggleRegistrationForm()" color="primary" class="ion-justify-content-center" size="large" expand="block" style="--border-radius: 100px; font-size: 0.8rem;">
           Sign Up
         </ion-button>
       </ion-col>
     </ion-row>
 
     <ion-row class="ion-justify-content-center" style="margin-top: 5%">
-      <ion-text style="text-decoration: underline; color: rgba(9, 0, 161,1); font-weight: bold; font-size: 0.8rem">
+      <ion-text style="text-decoration: underline; font-weight: bold; font-size: 0.8rem" color="blue">
         Forgot Password? Click Here
       </ion-text>
     </ion-row>
@@ -62,19 +62,19 @@
   <div class="ion-justify-content-center" style="margin-top: 5%;" *ngIf="showRegistrationForm">
   
     <form [formGroup]="registrationForm">
-      <ion-row class="ion-justify-content-center">
+      <ion-row class="ion-justify-content-center" *ngIf="error !== null">
         <ion-text color="danger" class="ion-text-center">{{ error }}</ion-text>
       </ion-row>
 
-      <ion-item style="background: transparent;">
-        <ion-label position="stacked" style="font-size: 1rem; margin-top: 5%">Username</ion-label>
+      <ion-item color="light">
+        <ion-label position="stacked" style="font-size: 1rem;">Username</ion-label>
         <ion-input type="text" formControlName="username"></ion-input>
       </ion-item>
       <ion-item *ngIf="!registrationForm.controls.username.valid && registrationForm.controls.username.dirty">
         Username must contain only alphanumeric characters.
       </ion-item>
 
-      <ion-item>
+      <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem">Password</ion-label>
         <ion-input type="password" formControlName="password"></ion-input>
       </ion-item>
@@ -82,7 +82,7 @@
         Password should contain at least 8 characters, an upper-case letter, a lower-case letter, a digit and a special symbol
       </ion-item>
 
-      <ion-item>
+      <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem">Confirm Password</ion-label>
         <ion-input type="password" formControlName="confirmPassword"></ion-input>
       </ion-item>
@@ -90,7 +90,7 @@
         Passwords don't match
       </ion-item>
 
-      <ion-item style="background: transparent;">
+      <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem">Email</ion-label>
         <ion-input type="email" formControlName="email"></ion-input>
       </ion-item>
@@ -98,7 +98,7 @@
         Enter a valid email ID.
       </ion-item>
 
-      <ion-item style="background: transparent;">
+      <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem">Phone Number</ion-label>
         <ion-input type="number" formControlName="number"></ion-input>
       </ion-item>
@@ -109,7 +109,7 @@
       <ion-row class="ion-justify-content-center">
         <ion-col size="10">
           <ion-button class="ion-justify-content-center" size="large" expand="block"
-            style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem; margin-top: 5%"
+            style="--border-radius: 100px; font-size: 0.8rem; margin-top: 5%" color="primary"
             (click)="checkRegistrationDetails()" [attr.disabled]="registrationForm.invalid ? 'true' : 'false'">
             Sign Up
           </ion-button>
@@ -119,7 +119,7 @@
   
     <ion-row class="ion-justify-content-center">
       <ion-col size="10">
-        <ion-button (click)="toggleRegistrationForm()" class="ion-justify-content-center" size="large" expand="block" style="--background: linear-gradient(84deg, rgba(9,0,161,1) 0%, rgba(11,11,101,1) 57%); --border-radius: 100px; font-size: 0.8rem;">
+        <ion-button (click)="toggleRegistrationForm()" color="primary" class="ion-justify-content-center" size="large" expand="block" style="--border-radius: 100px; font-size: 0.8rem;">
           Login
         </ion-button>
       </ion-col>

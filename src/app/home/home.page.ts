@@ -19,7 +19,7 @@ export class HomePage implements OnInit {
   loginForm: FormGroup;
   registrationForm: FormGroup;
   showRegistrationForm = false;
-  error = '';
+  error: string = null;
 
   constructor(
     private router: Router,
@@ -69,10 +69,15 @@ export class HomePage implements OnInit {
     });
     loading.present();
     await this.storage.get('username').then(username => {
-      this.checkedStatus = true;
-      if (username !== null) {
-        this.router.navigateByUrl('/tabs');
-      }
+      this.storage.get('accessToken').then(accessToken => {
+        this.storage.get('fcmToken').then(appId => {
+          this.checkedStatus = true;
+          if (username !== null) {
+            this.lockService.setUserDetails(username, accessToken, appId);
+            this.router.navigateByUrl('/tabs');
+          }
+        });
+      });
     });
     loading.dismiss();
   }
@@ -110,6 +115,7 @@ export class HomePage implements OnInit {
         this.storage.set('username', details.username);
         this.storage.set('accessToken', data.AccessToken);
         this.storage.set('refreshToken', data.RefreshToken);
+        this.lockService.setUserDetails(details.username, data.AccessToken, details.appId);
         this.router.navigateByUrl('/tabs');
       } else {
         this.error = rdata;
@@ -152,7 +158,7 @@ export class HomePage implements OnInit {
   }
 
   toggleRegistrationForm() {
-    this.error = '';
+    this.error = null;
     this.showRegistrationForm = !this.showRegistrationForm;
   }
 }

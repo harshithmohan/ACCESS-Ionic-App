@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
-import { LoadingController, PopoverController } from '@ionic/angular';
+import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Storage } from '@ionic/storage';
 import { GrantPermissionComponent } from '../grant-permission/grant-permission.component';
+import { AddLockComponent } from '../add-lock/add-lock.component';
+import { EditLockComponent } from '../edit-lock/edit-lock.component';
 
 @Component({
   selector: 'app-my-locks',
@@ -44,15 +45,44 @@ export class MyLocksPage implements OnInit {
   constructor(
     private lockService: LockService,
     private loadingController: LoadingController,
-    private storage: Storage,
-    private popoverCtrl: PopoverController
+    private popoverCtrl: PopoverController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
     this.loadLocks();
   }
 
+  async addLock() {
+    const popover = await this.popoverCtrl.create({
+      component: AddLockComponent,
+      animated: true,
+      showBackdrop: true
+    });
+    popover.style.cssText = '--width: 80vw;';
+    popover.onDidDismiss().then(() => this.loadLocks());
+    return await popover.present();
+  }
+
   async deleteLock(lockId: string) {
+    const alert = await this.alertController.create({
+      header: 'Confirm!',
+      message: 'Do you really want to delete this lock?',
+      buttons: [
+        {
+          text: 'Cancel'
+        }, {
+          text: 'Delete',
+          handler: () => {
+            this.deleteLockConfirm(lockId);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async deleteLockConfirm(lockId: string) {
     const loading = await this.loadingController.create({
       message: 'Deleting lock...'
     });
@@ -63,23 +93,24 @@ export class MyLocksPage implements OnInit {
     });
   }
 
+  async editLock(lock: Lock) {
+    const popover = await this.popoverCtrl.create({
+      component: EditLockComponent,
+      componentProps: { lock },
+      animated: true,
+      showBackdrop: true
+    });
+    popover.style.cssText = '--width: 80vw;';
+    popover.onDidDismiss().then(() => this.loadLocks());
+    return await popover.present();
+  }
+
   expandLock(lockId: string) {
     if (this.expandedLockId === lockId) {
       this.expandedLockId = '';
     } else {
       this.expandedLockId = lockId;
     }
-  }
-
-  async grantPermission(lock: Lock) {
-    const popover = await this.popoverCtrl.create({
-      component: GrantPermissionComponent,
-      componentProps: { lock },
-      animated: true,
-      showBackdrop: true
-    });
-    popover.style.cssText = '--width: 80vw;';
-    return await popover.present();
   }
 
   async favouriteLock(lockId: string) {
@@ -100,20 +131,29 @@ export class MyLocksPage implements OnInit {
     this.lockSet = new Set();
     this.lockSetFav = new Set();
     this.lockSetInvalid = new Set();
-    await this.storage.get('username').then(username => {
-      this.lockService.getLocks(username).then((rdata: string) => {
-        this.locks = JSON.parse(rdata);
-        Object.keys(this.locks).forEach((lockId: string) => {
-          if (this.locks[lockId].alias === null || this.locks[lockId].address === null) {
-            this.lockSetInvalid.add(lockId);
-          } else if (this.locks[lockId].favourite) {
-            this.lockSetFav.add(lockId);
-          } else {
-            this.lockSet.add(lockId);
-          }
-        });
+    this.lockService.getLocks().then((rdata: string) => {
+      this.locks = JSON.parse(rdata);
+      Object.keys(this.locks).forEach((lockId: string) => {
+        if (this.locks[lockId].alias === null || this.locks[lockId].address === null) {
+          this.lockSetInvalid.add(lockId);
+        } else if (this.locks[lockId].favourite) {
+          this.lockSetFav.add(lockId);
+        } else {
+          this.lockSet.add(lockId);
+        }
       });
     });
+  }
+
+  async grantPermission(lock: Lock) {
+    const popover = await this.popoverCtrl.create({
+      component: GrantPermissionComponent,
+      componentProps: { lock },
+      animated: true,
+      showBackdrop: true
+    });
+    popover.style.cssText = '--width: 80vw;';
+    return await popover.present();
   }
 
   async loadLocks() {

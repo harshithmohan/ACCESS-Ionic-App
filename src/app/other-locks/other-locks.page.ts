@@ -54,15 +54,10 @@ export class OtherLocksPage implements OnInit {
 
   async getLocks() {
     this.lockSet = new Set();
-    await this.lockService.getOtherLocks('osa').then((rdata: string) => {
+    await this.lockService.getOtherLocks().then((rdata: string) => {
       this.locks = JSON.parse(rdata);
       Object.keys(this.locks).forEach((lockId: string) => {
         this.lockSet.add(lockId);
-        // if (this.locks[lockId].favourite) {
-        //   this.lockSetFav.add(lockId);
-        // } else {
-        //   this.lockSet.add(lockId);
-        // }
       });
     });
   }

@@ -15,14 +15,20 @@ import { IonicStorageModule } from '@ionic/storage';
 import { FormsModule } from '@angular/forms';
 
 import { GrantPermissionComponent } from './grant-permission/grant-permission.component';
+import { AddLockComponent } from './add-lock/add-lock.component';
+import { EditLockComponent } from './edit-lock/edit-lock.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GrantPermissionComponent
+    GrantPermissionComponent,
+    AddLockComponent,
+    EditLockComponent
   ],
   entryComponents: [
-    GrantPermissionComponent
+    GrantPermissionComponent,
+    AddLockComponent,
+    EditLockComponent
   ],
   imports: [
     BrowserModule,
