@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { LockService } from '../services/lock.service';
 import { Storage } from '@ionic/storage';
@@ -27,7 +27,8 @@ export class HomePage implements OnInit {
     private loadingController: LoadingController,
     private lockService: LockService,
     private storage: Storage,
-    private fpAuth: FingerPrintAuth
+    private fpAuth: FingerPrintAuth,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -40,11 +41,12 @@ export class HomePage implements OnInit {
     });
 
     this.registrationForm = this.formBuilder.group({
+      name: ['', Validators.compose([Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       username: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z0-9]*'), Validators.required])],
       password: ['', Validators.compose([Validators.pattern('((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,30})'), Validators.required])],
       confirmPassword: ['', Validators.required],
       email: ['', Validators.compose([Validators.pattern('[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+'), Validators.required])],
-      number: ['', Validators.compose([Validators.pattern('[0-9]{10}'), Validators.required])]
+      phone: ['', Validators.compose([Validators.pattern('[0-9]{10}'), Validators.required])]
     }, {
         validator: this.passwordMatch('password', 'confirmPassword')
     });
@@ -116,6 +118,8 @@ export class HomePage implements OnInit {
         this.storage.set('accessToken', data.AccessToken);
         this.storage.set('refreshToken', data.RefreshToken);
         this.lockService.setUserDetails(details.username, data.AccessToken, details.appId);
+        this.loginForm.reset();
+        this.registrationForm.reset();
         this.router.navigateByUrl('/tabs');
       } else {
         this.error = rdata;
@@ -145,16 +149,29 @@ export class HomePage implements OnInit {
       username: this.registrationForm.value.username,
       password: this.registrationForm.value.password,
       email: this.registrationForm.value.email,
-      phone: this.registrationForm.value.phone
+      phone: this.registrationForm.value.phone,
+      name: this.registrationForm.value.name
     };
     await this.lockService.register(details).then((rdata: string) => {
       if (rdata === 'true') {
-        this.error = 'Please confirm your email address and login';
+        this.registrationForm.reset();
+        this.loginForm.reset();
+        this.showRegisteredAlert();
         this.toggleRegistrationForm();
       } else {
         this.error = rdata;
       }
     });
+  }
+
+  async showRegisteredAlert() {
+    const alert = await this.alertController.create({
+      header: 'Account Registered!',
+      message: 'Please confirm your email address and login',
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
   toggleRegistrationForm() {

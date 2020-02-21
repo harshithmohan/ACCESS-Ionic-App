@@ -67,6 +67,14 @@
       </ion-row>
 
       <ion-item color="light">
+        <ion-label position="stacked" style="font-size: 1rem;">Name</ion-label>
+        <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!registrationForm.controls.name.valid && registrationForm.controls.name.dirty">
+        Name must contain only alphabets and spaces.
+      </ion-item>
+
+      <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem;">Username</ion-label>
         <ion-input type="text" formControlName="username"></ion-input>
       </ion-item>
@@ -100,9 +108,9 @@
 
       <ion-item color="light">
         <ion-label position="stacked" style="font-size: 1rem">Phone Number</ion-label>
-        <ion-input type="number" formControlName="number"></ion-input>
+        <ion-input type="number" formControlName="phone"></ion-input>
       </ion-item>
-      <ion-item *ngIf="!registrationForm.controls.number.valid && registrationForm.controls.number.dirty">
+      <ion-item *ngIf="!registrationForm.controls.phone.valid && registrationForm.controls.phone.dirty">
         Enter a valid phone number
       </ion-item>
 
