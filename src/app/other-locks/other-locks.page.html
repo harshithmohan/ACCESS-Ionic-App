@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary" mode="ios">
+  <ion-toolbar color="tertiary" mode="ios">
     <ion-title>Other Locks</ion-title>
     <ion-buttons slot="start">
       <ion-menu-button autoHide="false" menu="menu"></ion-menu-button>
@@ -7,15 +7,15 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content id="content" color="dark">
-  <ion-refresher slot="fixed" (ionRefresh)="refreshLocks($event)">
+<ion-content id="content">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="refreshLocks($event)">
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <ion-card *ngFor="let lockId of lockSet" [attr.color]="lockId === expandedLockId ? 'light' : 'medium'" (click)="expandLock(lockId)">
+  </ion-refresher> -->
+  <ion-card *ngFor="let lockId of lockSet" [attr.color]="lockId === expandedLockId ? 'dark' : ''" (click)="expandLock(lockId)">
     <ion-card-header>
       <ion-row>
         <ion-col size="2">
-          <ion-icon name="key" size="large"></ion-icon>
+          <ion-icon [attr.name]="lockId === expandedLockId ? 'key' : 'key-outline'" size="large"></ion-icon>
         </ion-col>
         <ion-col size="10">
           <ion-row>
@@ -32,13 +32,13 @@
       <ion-row style="padding: 0">
         <ion-col size="6" style="padding: 0;">
           <ion-item color="tertiary" (click)="lock(lockId)" button>
-            <ion-icon name="lock" slot="start"></ion-icon>
+            <ion-icon name="lock-open-outline" slot="start"></ion-icon>
             <ion-label>Lock</ion-label>
           </ion-item>
         </ion-col>
         <ion-col size="6" style="padding: 0;">
           <ion-item color="secondary" (click)="unlock(lockId)" button>
-            <ion-icon name="unlock" slot="start"></ion-icon>
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
             <ion-label>Unlock</ion-label>
           </ion-item>
         </ion-col>

@@ -14,6 +14,8 @@ const { App } = Plugins;
 })
 export class TabsPage implements OnInit {
 
+  fingerprint = false;
+
   constructor(
     private router: Router,
     private menuController: MenuController,
@@ -32,6 +34,7 @@ export class TabsPage implements OnInit {
         }
       });
     });
+    this.storage.get('fingerprint').then(val => this.fingerprint = val);
   }
 
   async presentAlert() {
@@ -68,6 +71,11 @@ export class TabsPage implements OnInit {
     this.lockService.logout();
     this.storage.clear();
     this.router.navigateByUrl('/home');
+  }
+
+  async toggleFingerprint() {
+    await this.storage.set('fingerprint', this.fingerprint);
+    await this.storage.get('fingerprint').then(val => console.log(val));
   }
 
 }

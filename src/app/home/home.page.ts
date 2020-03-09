@@ -53,12 +53,6 @@ export class HomePage implements OnInit {
 
   }
 
-  check() {
-    this.fpAuth.verify().then(result => {
-      this.router.navigateByUrl('/tabs');
-    }).catch(error => console.log(error));
-  }
-
   testLogin() {
     this.loginForm.value.username = 'mohan226';
     this.loginForm.value.password = 'Honey@123';
@@ -70,17 +64,29 @@ export class HomePage implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    await this.storage.get('username').then(username => {
-      this.storage.get('accessToken').then(accessToken => {
-        this.storage.get('fcmToken').then(appId => {
-          this.checkedStatus = true;
-          if (username !== null) {
-            this.lockService.setUserDetails(username, accessToken, appId);
-            this.router.navigateByUrl('/tabs');
-          }
-        });
-      });
+    const details: StoredDetails = {
+      username: null,
+      accessToken: null,
+      refreshToken: null,
+      fcmToken: null,
+      fingerprint: null
+    };
+    await this.storage.forEach((value, key) => {
+      details[key] = value;
     });
+    if (details.username !== null) {
+      if (details.fingerprint) {
+        this.fpAuth.verify().then(result => {
+          this.lockService.setUserDetails(details);
+          this.router.navigateByUrl('/tabs');
+        }).catch(error => {
+          console.log(error);
+        });
+      } else {
+        this.lockService.setUserDetails(details);
+        this.router.navigateByUrl('/tabs');
+      }
+    }
     loading.dismiss();
   }
 
@@ -117,7 +123,14 @@ export class HomePage implements OnInit {
         this.storage.set('username', details.username);
         this.storage.set('accessToken', data.AccessToken);
         this.storage.set('refreshToken', data.RefreshToken);
-        this.lockService.setUserDetails(details.username, data.AccessToken, details.appId);
+        const userDetails: StoredDetails = {
+          username: details.username,
+          accessToken: data.accessToken,
+          refreshToken: data.RefreshToken,
+          fcmToken: details.appId,
+          fingerprint: false
+        };
+        this.lockService.setUserDetails(userDetails);
         this.loginForm.reset();
         this.registrationForm.reset();
         this.router.navigateByUrl('/tabs');
@@ -178,4 +191,12 @@ export class HomePage implements OnInit {
     this.error = null;
     this.showRegistrationForm = !this.showRegistrationForm;
   }
+}
+
+interface StoredDetails {
+  username: string;
+  accessToken: string;
+  refreshToken: string;
+  fcmToken: string;
+  fingerprint: boolean;
 }

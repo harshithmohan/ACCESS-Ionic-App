@@ -1,6 +1,6 @@
 <ion-grid>
   <ion-header>
-    <ion-toolbar color="blue">
+    <ion-toolbar color="tertiary">
       <ion-title class="ion-text-center">
         Add Lock
       </ion-title>
@@ -25,6 +25,11 @@
       <ion-item>
         <ion-label position="stacked">Address</ion-label>
         <ion-input type="text" name="address" [(ngModel)]="address" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label style="font-size: 12px">Webcam</ion-label>
+        <ion-toggle name="webcam" [(ngModel)]="webcam"></ion-toggle>
       </ion-item>
 
       <ion-row class="ion-justify-content-center">

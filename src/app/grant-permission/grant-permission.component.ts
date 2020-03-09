@@ -10,8 +10,14 @@ import { LoadingController, PopoverController, AlertController } from '@ionic/an
 export class GrantPermissionComponent implements OnInit {
 
   @Input() lock: Lock;
-  user: GrantPermissionDetails;
+  user: GrantPermissionDetails = {
+    lockId: '',
+    username: '',
+    userType: '',
+    expiry: null
+  };
   error = '';
+  currentTime = new Date().toISOString();
 
   constructor(
     private lockService: LockService,
@@ -21,16 +27,15 @@ export class GrantPermissionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.user = {
-      lockId: this.lock.lockId,
-      username: '',
-      userType: '',
-      expiry: null
-    };
+    this.user.lockId = this.lock.lockId;
   }
 
   async grantPermission() {
     console.log('SUBMITTED');
+    if (this.user.userType === 'Guest' && this.user.expiry === null) {
+      this.error = 'Please enter expiry date and time';
+      return;
+    }
     const loading = await this.loadingController.create({
       message: 'Please wait...'
     });
@@ -61,8 +66,6 @@ export class GrantPermissionComponent implements OnInit {
 interface Lock {
   lockId: string;
   alias: string;
-  address: string;
-  favourite: boolean;
 }
 
 interface GrantPermissionDetails {

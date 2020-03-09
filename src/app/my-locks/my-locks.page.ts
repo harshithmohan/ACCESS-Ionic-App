@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
 import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
-import { trigger, transition, style, animate } from '@angular/animations';
-import { GrantPermissionComponent } from '../grant-permission/grant-permission.component';
+import { trigger, transition, style, animate, query } from '@angular/animations';
 import { AddLockComponent } from '../add-lock/add-lock.component';
 import { EditLockComponent } from '../edit-lock/edit-lock.component';
+import { Router } from '@angular/router';
+import { Plugins } from '@capacitor/core';
+
+const { Browser } = Plugins;
 
 @Component({
   selector: 'app-my-locks',
@@ -45,8 +48,9 @@ export class MyLocksPage implements OnInit {
   constructor(
     private lockService: LockService,
     private loadingController: LoadingController,
-    private popoverCtrl: PopoverController,
-    private alertController: AlertController
+    private popoverController: PopoverController,
+    private alertController: AlertController,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -54,7 +58,7 @@ export class MyLocksPage implements OnInit {
   }
 
   async addLock() {
-    const popover = await this.popoverCtrl.create({
+    const popover = await this.popoverController.create({
       component: AddLockComponent,
       animated: true,
       showBackdrop: true
@@ -94,7 +98,7 @@ export class MyLocksPage implements OnInit {
   }
 
   async editLock(lock: Lock) {
-    const popover = await this.popoverCtrl.create({
+    const popover = await this.popoverController.create({
       component: EditLockComponent,
       componentProps: { lock },
       animated: true,
@@ -145,17 +149,6 @@ export class MyLocksPage implements OnInit {
     });
   }
 
-  async grantPermission(lock: Lock) {
-    const popover = await this.popoverCtrl.create({
-      component: GrantPermissionComponent,
-      componentProps: { lock },
-      animated: true,
-      showBackdrop: true
-    });
-    popover.style.cssText = '--width: 80vw;';
-    return await popover.present();
-  }
-
   async loadLocks() {
     const loading = await this.loadingController.create({
       message: 'Please wait...'
@@ -182,6 +175,10 @@ export class MyLocksPage implements OnInit {
     });
   }
 
+  async startWebcam(lockId: string) {
+    await Browser.open({ url: 'https://mohan226.ddns.net:8080/' });
+  }
+
   async unlock(lockId: string) {
     const loading = await this.loadingController.create({
       message: 'Unlocking ' + this.locks[lockId].alias + '...'
@@ -193,6 +190,14 @@ export class MyLocksPage implements OnInit {
     loading.dismiss();
   }
 
+  viewLogs(lockId: string) {
+    this.router.navigate(['/logs'], { queryParams: { filter: true, lockId } });
+  }
+
+  viewPermissions(lockId: string) {
+    this.router.navigateByUrl('/view-permissions/' + lockId);
+  }
+
 }
 
 interface Lock {
@@ -200,6 +205,7 @@ interface Lock {
   alias: string;
   address: string;
   favourite: boolean;
+  webcam: boolean;
 }
 
 interface LockObject {

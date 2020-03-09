@@ -25,8 +25,8 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      NavigationBar.setBackgroundColor({ color: '#000087' });
-      StatusBar.setBackgroundColor({ color: '#000087' });
+      NavigationBar.setBackgroundColor({ color: '#633ce0' });
+      StatusBar.setBackgroundColor({ color: '#633ce0' });
       PushNotifications.register();
       PushNotifications.addListener('registration', (token: PushNotificationToken) => {
         console.log(token.value);

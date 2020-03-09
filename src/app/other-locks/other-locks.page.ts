@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
 import { LoadingController } from '@ionic/angular';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-other-locks',
@@ -28,7 +29,8 @@ export class OtherLocksPage implements OnInit {
 
   constructor(
     private lockService: LockService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -80,14 +82,15 @@ export class OtherLocksPage implements OnInit {
   }
 
   async unlock(lockId: string) {
-    const loading = await this.loadingController.create({
-      message: 'Unlocking ' + this.locks[lockId].alias + '...'
-    });
-    loading.present();
-    await this.lockService.unlock(lockId).then(val => {
-      console.log(val);
-    });
-    loading.dismiss();
+    // const loading = await this.loadingController.create({
+    //   message: 'Unlocking ' + this.locks[lockId].alias + '...'
+    // });
+    // loading.present();
+    // await this.lockService.unlock(lockId).then(val => {
+    //   console.log(val);
+    // });
+    // loading.dismiss();
+    this.router.navigateByUrl('/ble-scan/' + lockId);
   }
 
 }

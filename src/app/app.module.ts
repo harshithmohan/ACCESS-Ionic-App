@@ -13,22 +13,29 @@ import { HttpClientModule } from '@angular/common/http';
 import { FingerPrintAuth } from 'capacitor-fingerprint-auth';
 import { IonicStorageModule } from '@ionic/storage';
 import { FormsModule } from '@angular/forms';
+import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 
 import { GrantPermissionComponent } from './grant-permission/grant-permission.component';
+import { EditPermissionComponent } from './edit-permission/edit-permission.component';
 import { AddLockComponent } from './add-lock/add-lock.component';
 import { EditLockComponent } from './edit-lock/edit-lock.component';
+import { LogsFilterComponent } from './logs-filter/logs-filter.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GrantPermissionComponent,
+    EditPermissionComponent,
     AddLockComponent,
-    EditLockComponent
+    EditLockComponent,
+    LogsFilterComponent
   ],
   entryComponents: [
     GrantPermissionComponent,
+    EditPermissionComponent,
     AddLockComponent,
-    EditLockComponent
+    EditLockComponent,
+    LogsFilterComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +48,7 @@ import { EditLockComponent } from './edit-lock/edit-lock.component';
   ],
   providers: [
     FingerPrintAuth,
+    BluetoothLE,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

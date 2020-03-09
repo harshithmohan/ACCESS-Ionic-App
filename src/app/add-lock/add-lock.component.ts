@@ -13,14 +13,14 @@ export class AddLockComponent implements OnInit {
   lockId = '';
   alias = '';
   address = '';
+  webcam = false;
   error = '';
 
   constructor(
     private loadingController: LoadingController,
     private alertController: AlertController,
     private lockService: LockService,
-    private popoverController: PopoverController,
-    private router: Router
+    private popoverController: PopoverController
   ) { }
 
   ngOnInit() {}
@@ -33,7 +33,7 @@ export class AddLockComponent implements OnInit {
     loading.present();
     await this.lockService.addLock(this.lockId).then(rdata => {
       if (rdata === 'true') {
-        this.lockService.editLock(this.lockId, this.alias, this.address).then(rdata2 => {
+        this.lockService.editLock(this.lockId, this.alias, this.address, this.webcam).then(rdata2 => {
           if (rdata2 === 'true') {
             this.showAlert();
             this.popoverController.dismiss();

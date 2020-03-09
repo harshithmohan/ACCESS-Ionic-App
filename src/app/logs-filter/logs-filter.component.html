@@ -1,0 +1,92 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-label>Lock:</ion-label>
+        <ion-select placeholder="Select a lock" interface="popover" [(ngModel)]="filterOptions.lockId">
+          <ion-select-option *ngFor="let lock of locks" value="{{ lock.lockId }}">{{ lock.alias }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-label>Start Date:</ion-label>
+        <ion-datetime placeholder="Select start date" [(ngModel)]="filterOptions.startDate" max="{{ currentDate }}"
+          displayFormat="MMM D, YYYY - hh:mm A"></ion-datetime>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-label>End Date:</ion-label>
+        <ion-datetime placeholder="Select end date" [(ngModel)]="filterOptions.endDate" min="{{ filterOptions.startDate }}" max="{{ currentDate }}"
+          displayFormat="MMM D, YYYY - hh:mm A"></ion-datetime>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-label>User:</ion-label>
+        <ion-select placeholder="Select a user" interface="popover" [(ngModel)]="filterOptions.username">
+          <ion-select-option *ngFor="let user of users" value="{{ user }}">{{ user }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-item lines="full">
+      <ion-col size="4">
+        <ion-label>Operation:</ion-label>
+      </ion-col>
+      <ion-col size="5">
+        <ion-item lines="none">
+          <ion-label>Unlock</ion-label>
+          <ion-checkbox slot="start" checked [(ngModel)]="unlockChecked" (ngModelChange)="setOperation()" style="margin-right: 2vw"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+      <ion-col size="5" style="margin-left: -4vw">
+        <ion-item lines="none">
+          <ion-label>Lock</ion-label>
+          <ion-checkbox slot="start" checked [(ngModel)]="lockChecked" (ngModelChange)="setOperation()" style="margin-right: 2vw"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-item>
+  </ion-row>
+  <ion-row>
+    <ion-item lines="full">
+      <ion-col size="4">
+        <ion-label>User Type:</ion-label>
+      </ion-col>
+      <ion-col size="5" style="margin-left: -0.5vw">
+        <ion-item lines="none">
+          <ion-label>Owner</ion-label>
+          <ion-checkbox slot="start" checked [(ngModel)]="ownerChecked" (ngModelChange)="setUserType()"
+            style="margin-right: 2vw"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+      <ion-col size="5" style="margin-left: -4vw">
+        <ion-item lines="none">
+          <ion-label>Guest</ion-label>
+          <ion-checkbox slot="start" checked [(ngModel)]="guestChecked" (ngModelChange)="setUserType()"
+            style="margin-right: 2vw"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-item>
+  </ion-row>
+  <ion-row>
+    <ion-col size="6">
+      <ion-button (click)="clearFilters()" expand="block" color="secondary">
+        Clear
+      </ion-button>
+    </ion-col>
+    <ion-col size="6">
+      <ion-button (click)="applyFilters()" expand="block">
+        Apply
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

@@ -16,6 +16,18 @@ const routes: Routes = [
     path: 'other-locks',
     loadChildren: () => import('./other-locks/other-locks.module').then( m => m.OtherLocksPageModule)
   },
+  {
+    path: 'logs',
+    loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
+  },
+  {
+    path: 'view-permissions/:lockId',
+    loadChildren: () => import('./view-permissions/view-permissions.module').then( m => m.ViewPermissionsPageModule)
+  },
+  {
+    path: 'ble-scan/:lockId',
+    loadChildren: () => import('./ble-scan/ble-scan.module').then( m => m.BleScanPageModule)
+  },
 ];
 
 @NgModule({

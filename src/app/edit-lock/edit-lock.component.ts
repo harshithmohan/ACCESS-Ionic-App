@@ -27,7 +27,7 @@ export class EditLockComponent implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    this.lockService.editLock(this.lock.lockId, this.lock.alias, this.lock.address).then(rdata => {
+    this.lockService.editLock(this.lock.lockId, this.lock.alias, this.lock.address, this.lock.webcam).then(rdata => {
       if (rdata === 'true') {
         this.showAlert();
         this.popoverController.dismiss();
@@ -55,4 +55,5 @@ interface Lock {
   alias: string;
   address: string;
   favourite: boolean;
+  webcam: boolean;
 }
