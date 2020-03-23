@@ -136,5 +136,6 @@ interface Permission {
   userType: string;
   username: string;
   name: string;
-  expiry: string;
+  expiryDisplay: string;
+  expiryActual: string;
 }

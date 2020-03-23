@@ -22,12 +22,13 @@ export class EditPermissionComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.permission);
+    console.log(new Date(this.permission.expiryActual));
   }
 
   async editPermission() {
     console.log('SUBMITTED');
     console.log(this.permission);
-    if (this.permission.userType === 'Guest' && this.permission.expiry === null) {
+    if (this.permission.userType === 'Guest' && this.permission.expiryActual === null) {
       this.error = 'Please enter expiry date and time';
       return;
     }
@@ -62,6 +63,7 @@ interface Permission {
   userType: string;
   username: string;
   name: string;
-  expiry: string;
+  expiryActual: string;
+  expiryDisplay: string;
   lockId: string;
 }

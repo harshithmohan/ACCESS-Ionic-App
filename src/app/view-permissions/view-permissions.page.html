@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="tertiary" mode="ios">
+  <ion-toolbar color="tertiary">
     <ion-title>Permissions - {{ lockAlias }}</ion-title>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -8,11 +8,11 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let permission of permissions" [attr.color]="permission.username === expandedPermission ? 'dark' : ''">
+  <ion-card *ngFor="let permission of permissions" [attr.color]="permission.username === expandedPermission ? 'dark' : ''" mode="ios">
     <ion-card-header>
       <ion-row>
         <ion-col size="2" (click)="expandPermission(permission.username)">
-          <ion-icon name="finger-print" size="large"></ion-icon>
+          <ion-icon name="finger-print" size="large" color="tertiary"></ion-icon>
         </ion-col>
         <ion-col size="10" (click)="expandPermission(permission.username)">
           <ion-row>
@@ -24,20 +24,20 @@
           <ion-row>
             <ion-card-subtitle>Type: {{ permission.userType }}</ion-card-subtitle>
           </ion-row>
-          <ion-row *ngIf="permission.expiry !== null">
-            <ion-card-subtitle>Expiry: {{ permission.expiry }}</ion-card-subtitle>
+          <ion-row *ngIf="permission.expiryDisplay !== null">
+            <ion-card-subtitle>Expiry: {{ permission.expiryDisplay }}</ion-card-subtitle>
           </ion-row>
         </ion-col>
       </ion-row>
     </ion-card-header>
   
     <ion-card-content *ngIf="permission.username === expandedPermission" style="padding: 0;" [@inOutAnimation]>
-      <ion-item lines="full" color="primary" (click)="editPermission(permission)" button>
-        <ion-icon name="create-outline" slot="start"></ion-icon>
+      <ion-item lines="full" color="dark" (click)="editPermission(permission)" button mode="md">
+        <ion-icon name="create-outline" slot="start" color="primary"></ion-icon>
         <ion-label>Edit</ion-label>
       </ion-item>
-      <ion-item lines="full" color="danger" (click)="revokePermission(permission.username)" button>
-        <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+      <ion-item lines="full" color="dark" (click)="revokePermission(permission.username)" button mode="md">
+        <ion-icon name="alert-circle-outline" slot="start" color="danger"></ion-icon>
         <ion-label>Revoke</ion-label>
       </ion-item>
     </ion-card-content>

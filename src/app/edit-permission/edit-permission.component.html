@@ -40,7 +40,7 @@
         <ion-col size="12">
           <ion-item *ngIf="permission.userType === 'Guest'">
             <ion-label>Expiry</ion-label>
-            <ion-datetime displayFormat="MMM D, YYYY - hh:mm A" name="expiry" min="{{ currentTime }}" [(ngModel)]="permission.expiry" placeholder="Select expiry"></ion-datetime>
+            <ion-datetime displayFormat="MMM D, YYYY - hh:mm A" name="expiry" min="{{ currentTime }}" [(ngModel)]="permission.expiryActual" placeholder="Select expiry"></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>

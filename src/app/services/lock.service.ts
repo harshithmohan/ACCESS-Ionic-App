@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class LockService {
 
   ec2url = 'http://smartlock-env.xhqi8gwdvk.ap-south-1.elasticbeanstalk.com';
-  // ec2url = 'http://127.0.0.1:5000';
+  // ec2url = 'http://192.168.42.23:5000';
   username: string = 'mohan226';
   accessToken: string = null;
   refreshToken: string = null;
@@ -124,7 +124,8 @@ interface PermissionDetails {
   lockId: string;
   username: string;
   userType: string;
-  expiry: string;
+  expiryActual: string;
+  expiryDisplay: string;
 }
 
 interface StoredDetails {

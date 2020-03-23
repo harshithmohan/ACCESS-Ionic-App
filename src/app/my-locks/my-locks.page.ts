@@ -17,7 +17,7 @@ const { Browser } = Plugins;
     trigger('inOutAnimation', [
       transition(':enter', [
         style({ height: 0, opacity: 0 }),
-        animate('1000ms ease', style({ height: '243px', opacity: 1 }))
+        animate('1000ms ease', style({ height: '292px', opacity: 1 }))
       ]),
       transition(':leave', [
         style({ opacity: 1 }),

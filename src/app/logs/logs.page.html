@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="tertiary" mode="ios">
+  <ion-toolbar color="tertiary">
     <ion-title>Logs</ion-title>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -19,11 +19,12 @@
 
   <ion-searchbar showCancelButton="focus" [(ngModel)]="searchQuery" (ngModelChange)="search($event)"></ion-searchbar>
 
-  <ion-card *ngFor="let log of logs" class="ion-margin-top">
+  <ion-card *ngFor="let log of logs" mode="ios">
     <ion-card-header>
       <ion-row>
         <ion-col size="2">
-          <ion-icon size="large" [attr.name]="log.operation === 'lock' ? 'lock-closed' : 'lock-open-outline'"></ion-icon>
+          <ion-icon size="large" [attr.name]="log.operation === 'lock' ? 'lock-closed' : 'lock-open-outline'"
+            [attr.color]="log.operation === 'lock' ? 'tertiary' : 'primary'"></ion-icon>
         </ion-col>
         <ion-col size="10">
           <ion-row>

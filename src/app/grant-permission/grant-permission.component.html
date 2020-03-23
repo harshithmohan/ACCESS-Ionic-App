@@ -53,7 +53,7 @@
           <ion-item *ngIf="user.userType === 'Guest'">
             <ion-label>Expiry</ion-label>
             <ion-datetime displayFormat="MMM D, YYYY - hh:mm A" name="expiry" min="{{ currentTime }}"
-              [(ngModel)]="user.expiry" placeholder="Select expiry"></ion-datetime>
+              [(ngModel)]="user.expiryActual" placeholder="Select expiry"></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>

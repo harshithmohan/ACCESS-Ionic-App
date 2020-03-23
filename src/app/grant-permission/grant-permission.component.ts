@@ -14,7 +14,8 @@ export class GrantPermissionComponent implements OnInit {
     lockId: '',
     username: '',
     userType: '',
-    expiry: null
+    expiryActual: null,
+    expiryDisplay: null
   };
   error = '';
   currentTime = new Date().toISOString();
@@ -32,7 +33,7 @@ export class GrantPermissionComponent implements OnInit {
 
   async grantPermission() {
     console.log('SUBMITTED');
-    if (this.user.userType === 'Guest' && this.user.expiry === null) {
+    if (this.user.userType === 'Guest' && this.user.expiryActual === null) {
       this.error = 'Please enter expiry date and time';
       return;
     }
@@ -72,5 +73,6 @@ interface GrantPermissionDetails {
   lockId: string;
   username: string;
   userType: string;
-  expiry: string;
+  expiryActual: string;
+  expiryDisplay: string;
 }
