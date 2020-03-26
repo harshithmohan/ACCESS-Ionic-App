@@ -53,7 +53,7 @@ export class ViewPermissionsPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then(() => this.loadPermissions());
+    popover.onDidDismiss().then(() => this.getPermissions());
     return await popover.present();
   }
 
@@ -66,12 +66,18 @@ export class ViewPermissionsPage implements OnInit {
   }
 
   async getPermissions() {
+    const loading = await this.loadingController.create({
+      message: 'Please wait...'
+    });
+    loading.present();
     this.activatedRoute.params.subscribe(params => {
       this.lockId = params.lockId;
-      this.lockService.getPermissions(this.lockId).then((rdata: string) => {
-        const data = JSON.parse(rdata);
-        this.lockAlias = data.alias;
-        this.permissions = data.details;
+      this.lockService.getPermissions(this.lockId).then((rdata: any) => {
+        if (rdata.status) {
+          this.lockAlias = rdata.content.alias;
+          this.permissions = rdata.content.details;
+        }
+        loading.dismiss();
       });
     });
   }
@@ -88,18 +94,18 @@ export class ViewPermissionsPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then(() => this.loadPermissions());
+    popover.onDidDismiss().then(() => this.getPermissions());
     return await popover.present();
   }
 
-  async loadPermissions() {
-    const loading = await this.loadingController.create({
-      message: 'Please wait...'
-    });
-    loading.present();
-    await this.getPermissions();
-    loading.dismiss();
-  }
+  // async loadPermissions() {
+  //   const loading = await this.loadingController.create({
+  //     message: 'Please wait...'
+  //   });
+  //   loading.present();
+  //   await this.getPermissions();
+  //   loading.dismiss();
+  // }
 
   async revokePermission(username: string) {
     const alert = await this.alertController.create({
@@ -126,7 +132,7 @@ export class ViewPermissionsPage implements OnInit {
     loading.present();
     await this.lockService.revokePermission(this.lockId, username).then(() => {
       loading.dismiss();
-      this.loadPermissions();
+      this.getPermissions();
     });
   }
 

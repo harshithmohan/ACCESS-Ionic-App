@@ -42,15 +42,6 @@ export class LogsPage implements OnInit {
     });
   }
 
-  async loadFilters() {
-    const loading = await this.loadingController.create({
-      message: 'Please wait...'
-    });
-    loading.present();
-    await this.applyFilters();
-    loading.dismiss();
-  }
-
   async applyFilters() {
     console.log(this.filterOptions);
     this.logs = this.allLogs;
@@ -111,27 +102,40 @@ export class LogsPage implements OnInit {
   }
 
   async getLocks() {
-    this.lockService.getLocks().then((rdata: string) => {
-      const lockObject = JSON.parse(rdata);
-      Object.values(lockObject).forEach((lock: Lock) => {
-        this.locks.push(lock);
-      });
-      this.locks.sort(this.lockCompare);
+    this.lockService.getLocks().then((rdata: any) => {
+      if (rdata.status) {
+        const lockObject = rdata.content;
+        Object.values(lockObject).forEach((lock: Lock) => {
+          this.locks.push(lock);
+        });
+        this.locks.sort(this.lockCompare);
+      }
     });
   }
 
   async getLogs() {
     this.logs = [];
     this.allLogs = [];
-    this.lockService.getLogs().then((rdata: string) => {
-      const temp = JSON.parse(rdata);
-      this.allLogs = temp.logs;
-      this.logs = temp.logs;
-      this.users = temp.users;
-      if (this.filter) {
-        this.loadFilters();
+    this.lockService.getLogs().then((rdata: any) => {
+      if (rdata.status) {
+        const temp = rdata.content;
+        this.allLogs = temp.logs;
+        this.logs = temp.logs;
+        this.users = temp.users;
+        if (this.filter) {
+          this.loadFilters();
+        }
       }
     });
+  }
+
+  async loadFilters() {
+    const loading = await this.loadingController.create({
+      message: 'Please wait...'
+    });
+    loading.present();
+    await this.applyFilters();
+    loading.dismiss();
   }
 
   async loadLogs() {

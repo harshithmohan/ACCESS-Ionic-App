@@ -32,7 +32,6 @@ export class GrantPermissionComponent implements OnInit {
   }
 
   async grantPermission() {
-    console.log('SUBMITTED');
     if (this.user.userType === 'Guest' && this.user.expiryActual === null) {
       this.error = 'Please enter expiry date and time';
       return;
@@ -41,12 +40,12 @@ export class GrantPermissionComponent implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    await this.lockService.grantPermission(this.user).then(rdata => {
-      if (rdata === 'true') {
+    await this.lockService.grantPermission(this.user).then((rdata: any) => {
+      if (rdata.status) {
         this.showGrantedAlert();
         this.popoverController.dismiss();
       } else {
-        this.error = rdata;
+        this.error = rdata.content;
       }
     });
     loading.dismiss();

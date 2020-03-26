@@ -22,17 +22,16 @@ export class EditLockComponent implements OnInit {
   ngOnInit() {}
 
   async editLock() {
-    console.log('SUBMITTED');
     const loading = await this.loadingController.create({
       message: 'Please wait...'
     });
     loading.present();
-    this.lockService.editLock(this.lock.lockId, this.lock.alias, this.lock.address, this.lock.webcam).then(rdata => {
-      if (rdata === 'true') {
+    this.lockService.editLock(this.lock.lockId, this.lock.alias, this.lock.address, this.lock.webcam).then((rdata: any) => {
+      if (rdata.status) {
         this.showAlert();
         this.popoverController.dismiss();
       } else {
-        this.error = rdata;
+        this.error = rdata.content;
       }
     });
     loading.dismiss();

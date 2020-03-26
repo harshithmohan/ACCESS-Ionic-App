@@ -75,17 +75,17 @@ export class HomePage implements OnInit {
       details[key] = value;
     });
     if (details.username !== null) {
-      if (details.fingerprint) {
-        this.fpAuth.verify().then(result => {
-          this.lockService.setUserDetails(details);
+      await this.getNewToken(details).then(val => {
+        if (details.fingerprint) {
+          this.fpAuth.verify().then(result => {
+            this.router.navigateByUrl('/tabs');
+          }).catch(error => {
+            console.log(error);
+          });
+        } else {
           this.router.navigateByUrl('/tabs');
-        }).catch(error => {
-          console.log(error);
-        });
-      } else {
-        this.lockService.setUserDetails(details);
-        this.router.navigateByUrl('/tabs');
-      }
+        }
+      });
     }
     loading.dismiss();
   }
@@ -108,6 +108,23 @@ export class HomePage implements OnInit {
     loading.dismiss();
   }
 
+  async getNewToken(details: StoredDetails): Promise<boolean> {
+    await this.lockService.getNewToken(details.refreshToken).then((rdata: any) => {
+      if (rdata.status) {
+        this.storage.set('username', details.username);
+        this.storage.set('accessToken', rdata.content.AccessToken);
+        this.storage.set('refreshToken', details.refreshToken);
+        details.accessToken = rdata.content.AccessToken;
+        console.log(details);
+        this.lockService.setUserDetails(details);
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return false;
+  }
+
   async login() {
     const details = {
       username: this.loginForm.value.username,
@@ -117,16 +134,15 @@ export class HomePage implements OnInit {
     await this.storage.get('fcmToken').then(token => {
       details.appId = token;
     });
-    await this.lockService.login(details).then((rdata: string) => {
-      if (rdata.includes('AccessToken')) {
-        const data = JSON.parse(rdata);
+    await this.lockService.login(details).then((rdata: any) => {
+      if (rdata.status) {
         this.storage.set('username', details.username);
-        this.storage.set('accessToken', data.AccessToken);
-        this.storage.set('refreshToken', data.RefreshToken);
+        this.storage.set('accessToken', rdata.content.AccessToken);
+        this.storage.set('refreshToken', rdata.content.RefreshToken);
         const userDetails: StoredDetails = {
           username: details.username,
-          accessToken: data.accessToken,
-          refreshToken: data.RefreshToken,
+          accessToken: rdata.content.AccessToken,
+          refreshToken: rdata.content.RefreshToken,
           fcmToken: details.appId,
           fingerprint: false
         };
@@ -135,7 +151,7 @@ export class HomePage implements OnInit {
         this.registrationForm.reset();
         this.router.navigateByUrl('/tabs');
       } else {
-        this.error = rdata;
+        this.error = rdata.content;
       }
     });
   }
@@ -165,14 +181,15 @@ export class HomePage implements OnInit {
       phone: this.registrationForm.value.phone,
       name: this.registrationForm.value.name
     };
-    await this.lockService.register(details).then((rdata: string) => {
-      if (rdata === 'true') {
+    await this.lockService.register(details).then((rdata: any) => {
+      console.log(rdata);
+      if (rdata.status) {
         this.registrationForm.reset();
         this.loginForm.reset();
         this.showRegisteredAlert();
         this.toggleRegistrationForm();
       } else {
-        this.error = rdata;
+        this.error = rdata.content;
       }
     });
   }

@@ -31,18 +31,18 @@ export class AddLockComponent implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    await this.lockService.addLock(this.lockId).then(rdata => {
-      if (rdata === 'true') {
-        this.lockService.editLock(this.lockId, this.alias, this.address, this.webcam).then(rdata2 => {
-          if (rdata2 === 'true') {
+    await this.lockService.addLock(this.lockId).then((rdata: any) => {
+      if (rdata.status) {
+        this.lockService.editLock(this.lockId, this.alias, this.address, this.webcam).then((rdata2: any) => {
+          if (rdata2.status) {
             this.showAlert();
             this.popoverController.dismiss();
           } else {
-            this.error = rdata2;
+            this.error = rdata2.content;
           }
         });
       } else {
-        this.error = rdata;
+        this.error = rdata.content;
       }
     });
     loading.dismiss();

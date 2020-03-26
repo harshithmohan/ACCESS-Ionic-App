@@ -7,8 +7,8 @@ import { HttpClient } from '@angular/common/http';
 export class LockService {
 
   ec2url = 'http://smartlock-env.xhqi8gwdvk.ap-south-1.elasticbeanstalk.com';
-  // ec2url = 'http://192.168.42.23:5000';
-  username: string = 'mohan226';
+  // ec2url = 'http://192.168.1.14:5000';
+  username: string = null;
   accessToken: string = null;
   refreshToken: string = null;
   appId: string = null;
@@ -17,76 +17,90 @@ export class LockService {
     private http: HttpClient
   ) { }
 
+  addTokens(data: any) {
+    return {
+      content: data,
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken
+    };
+  }
+
   async addLock(lockId: string) {
-    return this.http.post(this.ec2url + '/addLock', { username: this.username, lockId }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/addLock', this.addTokens({ lockId })).toPromise();
   }
 
-  async checkToken(accessToken: string, refreshToken: string) {
-    return this.http.post(this.ec2url + '/checkToken', { accessToken, refreshToken }, { responseType: 'text' }).toPromise();
-  }
-
-  async editLock(lockId: string, alias: string, address: string, webcam: boolean) {
-    return this.http.post(this.ec2url + '/editLock', { lockId, alias, address, webcam }, { responseType: 'text' }).toPromise();
-  }
-
-  async editPermission(details: PermissionDetails) {
-    return this.http.post(this.ec2url + '/editPermission', details, { responseType: 'text' }).toPromise();
+  async changePassword(oldPassword: string, newPassword: string) {
+    return this.http.post(this.ec2url + '/changePassword', { oldPassword, newPassword, accessToken: this.accessToken }).toPromise();
   }
 
   async deleteLock(lockId: string) {
-    return this.http.post(this.ec2url + '/deleteLock', { lockId }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/deleteLock', this.addTokens({ lockId })).toPromise();
   }
 
-  async revokePermission(lockId: string, username: string) {
-    return this.http.post(this.ec2url + '/revokePermission', { lockId, username }, { responseType: 'text' }).toPromise();
+  async editLock(lockId: string, alias: string, address: string, webcam: boolean) {
+    return this.http.post(this.ec2url + '/editLock', this.addTokens({ lockId, alias, address, webcam })).toPromise();
+  }
+
+  async editPermission(details: PermissionDetails) {
+    return this.http.post(this.ec2url + '/editPermission', this.addTokens(details)).toPromise();
   }
 
   async favouriteLock(lockId: string) {
-    console.log('Fav ' + lockId);
-    return this.http.post(this.ec2url + '/toggleFavourite', { lockId, choice: 'fav' }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/toggleFavourite', this.addTokens({ lockId, choice: 'fav' })).toPromise();
   }
 
-  async getBluetoothDetails(lockId: string) {
-    return this.http.post(this.ec2url + '/getBluetoothDetails', { lockId }, { responseType: 'text' }).toPromise();
+  async getBluetoothAddress(lockId: string) {
+    return this.http.post(this.ec2url + '/getBluetoothAddress', this.addTokens({ lockId })).toPromise();
+  }
+
+  async getNewToken(refreshToken: string) {
+    return this.http.post(this.ec2url + '/getNewToken', { refreshToken }).toPromise();
   }
 
   async getLocks() {
-    return this.http.post(this.ec2url + '/getLocks', { username: this.username }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/getLocks', this.addTokens('')).toPromise();
   }
 
   async getLogs() {
-    return this.http.post(this.ec2url + '/getLogs', { username: this.username }, { responseType: 'text'}).toPromise();
+    return this.http.post(this.ec2url + '/getLogs', this.addTokens('')).toPromise();
   }
 
   async getOtherLocks() {
-    return this.http.post(this.ec2url + '/getOtherLocks', { username: this.username }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/getOtherLocks', this.addTokens('')).toPromise();
   }
 
   async getPermissions(lockId: string) {
-    return this.http.post(this.ec2url + '/getPermissions', { lockId }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/getPermissions', this.addTokens({ lockId })).toPromise();
   }
 
   async grantPermission(details: PermissionDetails) {
-    console.log(details);
-    return this.http.post(this.ec2url + '/grantPermission', details, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/grantPermission', this.addTokens(details)).toPromise();
   }
 
   async lock(lockId: string) {
-    return this.http.post(this.ec2url + '/lockOperations', { lockId, operation: 'lock', username: this.username },
-      { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/lockOperations', this.addTokens({ lockId, operation: 'lock', username: this.username }))
+      .toPromise();
+  }
+
+  async lockGuest(lockId: string, btUUID: string) {
+    return this.http.post(this.ec2url + '/lockOperationsGuest', this.addTokens({ lockId, btUUID, operation: 'lock'})).toPromise();
   }
 
   async login(details: UserLoginDetails) {
-    return this.http.post(this.ec2url + '/login', details, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/login', details).toPromise();
   }
 
   async logout() {
-    return this.http.post(this.ec2url + '/logout', { username: this.username, accessToken: this.accessToken, appId: this.appId },
-      { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/logout', { username: this.username, accessToken: this.accessToken, appId: this.appId })
+      .toPromise();
   }
 
   async register(details: UserRegistrationDetails) {
-    return this.http.post(this.ec2url + '/signup', details, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/register', details).toPromise();
+  }
+
+  async revokePermission(lockId: string, username: string) {
+    return this.http.post(this.ec2url + '/revokePermission', this.addTokens({ lockId, username })).toPromise();
   }
 
   async setUserDetails(details: StoredDetails) {
@@ -97,14 +111,18 @@ export class LockService {
   }
 
   async unfavouriteLock(lockId: string) {
-    console.log('Unfav ' + lockId);
-    return this.http.post(this.ec2url + '/toggleFavourite', { lockId, choice: 'unfav' }, { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/toggleFavourite', this.addTokens({ lockId, choice: 'unfav' })).toPromise();
   }
 
   async unlock(lockId: string) {
-    return this.http.post(this.ec2url + '/lockOperations', { lockId, operation: 'unlock', username: this.username },
-      { responseType: 'text' }).toPromise();
+    return this.http.post(this.ec2url + '/lockOperations', this.addTokens({ lockId, operation: 'unlock'}))
+      .toPromise();
   }
+
+  async unlockGuest(lockId: string, btUUID: string) {
+    return this.http.post(this.ec2url + '/lockOperationsGuest', this.addTokens({ lockId, btUUID, operation: 'unlock'})).toPromise();
+  }
+
 }
 
 interface UserLoginDetails {

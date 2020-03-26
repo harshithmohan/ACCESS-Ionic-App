@@ -36,12 +36,12 @@ export class EditPermissionComponent implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    await this.lockService.editPermission(this.permission).then(rdata => {
-      if (rdata === 'true') {
+    await this.lockService.editPermission(this.permission).then((rdata: any) => {
+      if (rdata.status) {
         this.showAlert();
         this.popoverController.dismiss();
       } else {
-        this.error = rdata;
+        this.error = rdata.content;
       }
     });
     loading.dismiss();

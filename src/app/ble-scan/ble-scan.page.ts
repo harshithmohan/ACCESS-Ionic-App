@@ -3,6 +3,7 @@ import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LockService } from '../services/lock.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-ble-scan',
@@ -12,7 +13,7 @@ import { LockService } from '../services/lock.service';
 export class BleScanPage implements OnInit {
 
   lockId: string;
-  bleUUID: string;
+  operation: string;
   btAddress: string;
 
   constructor(
@@ -25,19 +26,15 @@ export class BleScanPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.checkPermissions();
     this.activatedRoute.params.subscribe(params => {
+      console.log(params);
       this.lockId = params.lockId;
-      this.lockService.getBluetoothDetails(this.lockId).then((rdata: string) => {
-        console.log(rdata);
-        // const data = JSON.parse(rdata);
-        // this.bleUUID = data.bleUUID;
-        // this.btAddress = data.btAddress;
-        this.btAddress = 'B8:27:EB:3B:5B:C3';
-        // this.btAddress = '90:78:41:6F:2D:53';
-        console.log(this.bleUUID);
-        console.log(this.btAddress);
-        this.checkPermissions();
+      this.operation = params.operation;
+      this.lockService.getBluetoothAddress(this.lockId).then((rdata: any) => {
+        if (rdata.status) {
+          this.btAddress = rdata.content;
+          this.checkPermissions();
+        }
       });
     });
   }
@@ -46,13 +43,17 @@ export class BleScanPage implements OnInit {
     let hasPermission = false;
     await this.ble.hasPermission().then(locationPermission => hasPermission = locationPermission.hasPermission);
     if (!hasPermission) {
+      console.log('no perm');
       let requestPermission = false;
       await this.ble.requestPermission().then(reqPermission => requestPermission = reqPermission.requestPermission);
       if (!requestPermission) {
         this.showAlert('No location permission!', 'Cannot scan for devices without permission');
+      } else {
+        this.checkPermissions();
       }
     } else {
       let isLocationEnabled = false;
+      console.log('not enabled');
       await this.ble.isLocationEnabled().then(locationEnabled => isLocationEnabled = locationEnabled.isLocationEnabled);
       if (!isLocationEnabled) {
         let requestLocation = false;
@@ -64,10 +65,16 @@ export class BleScanPage implements OnInit {
     }
   }
 
+  async initializeBluetooth() {
+    this.ble.initialize({ request: true }).subscribe(val => {
+      console.log('BluetoothLE ' + val.status);
+      this.scanDevices();
+    });
+  }
+
   async scanDevices() {
-    // await this.ble.stopScan();
     const loading = await this.loadingController.create({
-      message: 'Unlocking ...'
+      message: 'Checking proximity ...'
     });
     loading.present();
     await this.ble.isScanning().then(val => {
@@ -75,30 +82,47 @@ export class BleScanPage implements OnInit {
         this.ble.stopScan();
       }
     });
+    const timeout = timer(15000);
+    timeout.subscribe(() => {
+      this.ble.stopScan().then(() => {
+        loading.dismiss();
+        this.showUnableAuthAlert();
+      });
+    });
     this.ble.startScan({ services: [] }).subscribe(scan => {
       console.log(scan);
       if (scan.address === this.btAddress) {
-        // this.ble.close({ address: '90:78:41:6F:2D:53' }).then(val => {
-        //   console.log('DISCONNECT: ', val);
-        // });
+        this.ble.close({ address: scan.address }).then(val => {
+          console.log('DISCONNECT: ', val);
+        }).catch();
         this.ble.stopScan();
-        this.unlock();
-        loading.dismiss();
-        // this.ble.connect({ address: scan.address }).subscribe(conn => {
-        //   if (conn.status === 'connected') {
-        //     this.ble.discover({ address: scan.address, clearCache: true }).then(device => {
-        //       console.log(device);
-        //     });
-        //   }
-        // });
+        this.ble.connect({ address: scan.address }).subscribe(conn => {
+          if (conn.status === 'connected') {
+            this.ble.discover({ address: scan.address, clearCache: true }).then(device => {
+              console.log(device.services[2].uuid);
+              if (this.operation === 'lock') {
+                this.lockService.lockGuest(this.lockId, device.services[2].uuid).then((rdata: any) => {
+                  loading.dismiss();
+                  if (rdata.status) {
+                    this.router.navigateByUrl('/tabs/other-locks');
+                  } else {
+                    this.showUnableAuthAlert();
+                  }
+                });
+              } else {
+                this.lockService.unlockGuest(this.lockId, device.services[2].uuid).then((rdata: any) => {
+                  loading.dismiss();
+                  if (rdata.status) {
+                    this.router.navigateByUrl('/tabs/other-locks');
+                  } else {
+                    this.showUnableAuthAlert();
+                  }
+                });
+              }
+            });
+          }
+        });
       }
-    });
-  }
-
-  async initializeBluetooth() {
-    this.ble.initialize({ request: true }).subscribe(val => {
-      console.log('BluetoothLE ' + val.status);
-      this.scanDevices();
     });
   }
 
@@ -112,16 +136,23 @@ export class BleScanPage implements OnInit {
     await alert.present();
   }
 
-  async unlock() {
-    const loading = await this.loadingController.create({
-      message: 'Unlocking ...'
+  async showUnableAuthAlert() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Unable to authenticate. Please try again',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => this.router.navigateByUrl('/tabs/other-locks')
+        },
+        {
+          text: 'Retry',
+          handler: () => this.scanDevices()
+        }
+      ]
     });
-    loading.present();
-    await this.lockService.unlock(this.lockId).then(val => {
-      console.log(val);
-      this.router.navigateByUrl('/tabs');
-    });
-    loading.dismiss();
+
+    await alert.present();
   }
 
 }

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
-import { MenuController, AlertController } from '@ionic/angular';
+import { MenuController, AlertController, PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { LockService } from '../services/lock.service';
+import { ChangePasswordComponent } from '../change-password/change-password.component';
 
 const { App } = Plugins;
 
@@ -20,6 +21,7 @@ export class TabsPage implements OnInit {
     private router: Router,
     private menuController: MenuController,
     private alertController: AlertController,
+    private popoverController: PopoverController,
     private storage: Storage,
     private lockService: LockService
   ) { }
@@ -37,22 +39,14 @@ export class TabsPage implements OnInit {
     this.storage.get('fingerprint').then(val => this.fingerprint = val);
   }
 
-  async presentAlert() {
-    const alert = await this.alertController.create({
-      header: 'Confirm!',
-      message: 'Do you want to close the app?',
-      buttons: [
-        {
-          text: 'Cancel'
-        }, {
-          text: 'Close',
-          handler: () => {
-            App.exitApp();
-          }
-        }
-      ]
+  async changePassword() {
+    const popover = await this.popoverController.create({
+      component: ChangePasswordComponent,
+      animated: true,
+      showBackdrop: true
     });
-    await alert.present();
+    popover.style.cssText = '--width: 80vw;';
+    return await popover.present();
   }
 
   gotoHowToUse() {
@@ -71,6 +65,24 @@ export class TabsPage implements OnInit {
     this.lockService.logout();
     this.storage.clear();
     this.router.navigateByUrl('/home');
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Confirm!',
+      message: 'Do you want to close the app?',
+      buttons: [
+        {
+          text: 'Cancel'
+        }, {
+          text: 'Close',
+          handler: () => {
+            App.exitApp();
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async toggleFingerprint() {

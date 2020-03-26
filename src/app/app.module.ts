@@ -12,7 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { FingerPrintAuth } from 'capacitor-fingerprint-auth';
 import { IonicStorageModule } from '@ionic/storage';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 
 import { GrantPermissionComponent } from './grant-permission/grant-permission.component';
@@ -20,6 +20,7 @@ import { EditPermissionComponent } from './edit-permission/edit-permission.compo
 import { AddLockComponent } from './add-lock/add-lock.component';
 import { EditLockComponent } from './edit-lock/edit-lock.component';
 import { LogsFilterComponent } from './logs-filter/logs-filter.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -28,14 +29,16 @@ import { LogsFilterComponent } from './logs-filter/logs-filter.component';
     EditPermissionComponent,
     AddLockComponent,
     EditLockComponent,
-    LogsFilterComponent
+    LogsFilterComponent,
+    ChangePasswordComponent
   ],
   entryComponents: [
     GrantPermissionComponent,
     EditPermissionComponent,
     AddLockComponent,
     EditLockComponent,
-    LogsFilterComponent
+    LogsFilterComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,8 @@ import { LogsFilterComponent } from './logs-filter/logs-filter.component';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     FingerPrintAuth,

@@ -135,8 +135,8 @@ export class MyLocksPage implements OnInit {
     this.lockSet = new Set();
     this.lockSetFav = new Set();
     this.lockSetInvalid = new Set();
-    this.lockService.getLocks().then((rdata: string) => {
-      this.locks = JSON.parse(rdata);
+    this.lockService.getLocks().then((rdata: any) => {
+      this.locks = rdata.content;
       Object.keys(this.locks).forEach((lockId: string) => {
         if (this.locks[lockId].alias === null || this.locks[lockId].address === null) {
           this.lockSetInvalid.add(lockId);
@@ -163,9 +163,7 @@ export class MyLocksPage implements OnInit {
       message: 'Locking ' + this.locks[lockId].alias + '...'
     });
     loading.present();
-    await this.lockService.lock(lockId).then(val => {
-      console.log(val);
-    });
+    await this.lockService.lock(lockId);
     loading.dismiss();
   }
 
@@ -184,9 +182,7 @@ export class MyLocksPage implements OnInit {
       message: 'Unlocking ' + this.locks[lockId].alias + '...'
     });
     loading.present();
-    await this.lockService.unlock(lockId).then(val => {
-      console.log(val);
-    });
+    await this.lockService.unlock(lockId);
     loading.dismiss();
   }
 

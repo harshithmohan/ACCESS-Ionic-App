@@ -25,7 +25,7 @@ const routes: Routes = [
     loadChildren: () => import('./view-permissions/view-permissions.module').then( m => m.ViewPermissionsPageModule)
   },
   {
-    path: 'ble-scan/:lockId',
+    path: 'ble-scan/:lockId/:operation',
     loadChildren: () => import('./ble-scan/ble-scan.module').then( m => m.BleScanPageModule)
   },
 ];
