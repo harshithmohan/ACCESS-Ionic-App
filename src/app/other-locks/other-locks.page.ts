@@ -39,6 +39,8 @@ export class OtherLocksPage implements OnInit {
   locks: LockObject;
   lockSet: Set<string>;
   lockOwnerSet: Set<string>;
+  lockSetEmpty = true;
+  lockOwnerSetEmpty = true;
   expandedLockId = '';
 
   constructor(
@@ -81,6 +83,12 @@ export class OtherLocksPage implements OnInit {
             this.lockSet.add(lockId);
           }
         });
+        if (this.lockSet.size > 0) {
+          this.lockSetEmpty = false;
+        }
+        if (this.lockOwnerSet.size > 0) {
+          this.lockOwnerSetEmpty = false;
+        }
       }
     });
   }

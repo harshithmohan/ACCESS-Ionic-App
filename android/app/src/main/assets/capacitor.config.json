@@ -4,17 +4,13 @@
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
-  "linuxAndroidStudioPath": "/home/harshith/.local/share/JetBrains/Toolbox/apps/AndroidStudio/ch-0/192.6241897/bin/studio.sh",
-  "cordova": {
-    "preferences": {
-      "ScrollEnabled": "false",
-      "android-minSdkVersion": "19",
-      "BackupWebStorage": "none",
-      "SplashMaintainAspectRatio": "true",
-      "FadeSplashScreenDuration": "300",
-      "SplashShowOnlyFirstTime": "false",
-      "SplashScreen": "screen",
-      "SplashScreenDelay": "3000"
+  "linuxAndroidStudioPath": "/home/harshith/.local/share/JetBrains/Toolbox/apps/AndroidStudio/ch-0/192.6308749/bin/studio.sh",
+  "plugins": {
+    "SplashScreen": {
+      "showSpinner": true,
+      "spinnerColor": "#5260ff",
+      "backgroundColor": "#ffffffff",
+      "androidScaleType": "CENTER_CROP"
     }
   }
 }

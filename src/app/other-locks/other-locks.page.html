@@ -12,13 +12,17 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card mode="ios" color="primary">
-    <ion-card-header>
-      <ion-card-title class="ion-text-center">
-        Secondary Owner Locks
-      </ion-card-title>
-    </ion-card-header>
-  </ion-card>
+  <ion-title class="ion-text-center ion-no-margin ion-margin-top">
+    <ion-text mode="ios" color="primary">
+      Secondary Owner Locks
+    </ion-text>
+  </ion-title>
+
+  <ion-row class="ion-margin-top ion-justify-content-center" *ngIf="lockOwnerSetEmpty">
+    <ion-text mode="ios">
+      No locks here!
+    </ion-text>
+  </ion-row>
 
   <ion-card *ngFor="let lockId of lockOwnerSet" [attr.color]="lockId === expandedLockId ? 'dark' : ''"
     (click)="expandLock(lockId)" mode="ios">
@@ -70,13 +74,17 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card mode="ios" color="primary">
-    <ion-card-header>
-      <ion-card-title class="ion-text-center">
-        Guest Locks
-      </ion-card-title>
-    </ion-card-header>
-  </ion-card>
+  <ion-title class="ion-text-center ion-margin-top" style="margin-top: 4vh;">
+    <ion-text mode="ios" color="primary">
+      Guest Locks
+    </ion-text>
+  </ion-title>
+
+  <ion-row class="ion-margin-top ion-justify-content-center" *ngIf="lockSetEmpty">
+    <ion-text mode="ios">
+      No locks here!
+    </ion-text>
+  </ion-row>
 
   <ion-card *ngFor="let lockId of lockSet" [attr.color]="lockId === expandedLockId ? 'dark' : ''" (click)="expandLock(lockId)" mode="ios">
     <ion-card-header>
