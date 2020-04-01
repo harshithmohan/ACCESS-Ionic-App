@@ -28,6 +28,10 @@ const routes: Routes = [
     path: 'ble-scan/:lockId/:operation',
     loadChildren: () => import('./ble-scan/ble-scan.module').then( m => m.BleScanPageModule)
   },
+  {
+    path: 'how-to-use',
+    loadChildren: () => import('./how-to-use/how-to-use.module').then( m => m.HowToUsePageModule)
+  },
 ];
 
 @NgModule({
