@@ -22,6 +22,9 @@ import { EditLockComponent } from './edit-lock/edit-lock.component';
 import { LogsFilterComponent } from './logs-filter/logs-filter.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 
+import { ViewPermissionsPageModule } from './view-permissions/view-permissions.module';
+import { BleScanPageModule } from './ble-scan/ble-scan.module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +51,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ViewPermissionsPageModule,
+    BleScanPageModule
   ],
   providers: [
     FingerPrintAuth,

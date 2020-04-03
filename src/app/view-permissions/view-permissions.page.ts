@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, Input } from '@angular/core';
 import { LockService } from '../services/lock.service';
-import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
+import { LoadingController, AlertController, PopoverController, ModalController } from '@ionic/angular';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { EditPermissionComponent } from '../edit-permission/edit-permission.component';
 import { GrantPermissionComponent } from '../grant-permission/grant-permission.component';
-
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-view-permissions',
@@ -27,20 +26,26 @@ import { GrantPermissionComponent } from '../grant-permission/grant-permission.c
 export class ViewPermissionsPage implements OnInit {
 
   permissions: Array<Permission> = [];
-  lockId = '';
+  @Input() lockId: string;
   lockAlias = '';
   expandedPermission = '';
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    private alertController: AlertController,
+    private backButton: BackButtonService,
     private lockService: LockService,
     private loadingController: LoadingController,
-    private alertController: AlertController,
+    private modalController: ModalController,
     private popoverController: PopoverController
   ) { }
 
   ngOnInit() {
+    this.backButton.setModalBackButton();
     this.getPermissions();
+  }
+
+  dismiss() {
+    this.modalController.dismiss();
   }
 
   async editPermission(tempPermission: Permission) {
@@ -53,7 +58,12 @@ export class ViewPermissionsPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then(() => this.getPermissions());
+    popover.onDidDismiss().then((data) => {
+      this.backButton.setModalBackButton();
+      if (data.role !== 'backdrop' && data.data.reloadData) {
+        this.getPermissions();
+      }
+    });
     return await popover.present();
   }
 
@@ -70,15 +80,12 @@ export class ViewPermissionsPage implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    this.activatedRoute.params.subscribe(params => {
-      this.lockId = params.lockId;
-      this.lockService.getPermissions(this.lockId).then((rdata: any) => {
-        if (rdata.status) {
-          this.lockAlias = rdata.content.alias;
-          this.permissions = rdata.content.details;
-        }
-        loading.dismiss();
-      });
+    this.lockService.getPermissions(this.lockId).then((rdata: any) => {
+      if (rdata.status) {
+        this.lockAlias = rdata.content.alias;
+        this.permissions = rdata.content.details;
+      }
+      loading.dismiss();
     });
   }
 
@@ -94,20 +101,17 @@ export class ViewPermissionsPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then(() => this.getPermissions());
+    popover.onDidDismiss().then((data) => {
+      this.backButton.setModalBackButton();
+      if (data.role !== 'backdrop' && data.data.reloadData) {
+        this.getPermissions();
+      }
+    });
     return await popover.present();
   }
 
-  // async loadPermissions() {
-  //   const loading = await this.loadingController.create({
-  //     message: 'Please wait...'
-  //   });
-  //   loading.present();
-  //   await this.getPermissions();
-  //   loading.dismiss();
-  // }
-
   async revokePermission(username: string) {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Confirm!',
       message: 'Do you really want to revoke permission for this user?',
@@ -122,6 +126,7 @@ export class ViewPermissionsPage implements OnInit {
         }
       ]
     });
+    alert.onDidDismiss().then(() => this.backButton.setModalBackButton());
     await alert.present();
   }
 

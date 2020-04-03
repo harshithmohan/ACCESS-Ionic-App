@@ -33,3 +33,7 @@ ion-card {
     margin-top: 2vh;
     margin-bottom: 1vh;
 }
+
+ion-popover {
+    z-index: 20100 !important;
+}

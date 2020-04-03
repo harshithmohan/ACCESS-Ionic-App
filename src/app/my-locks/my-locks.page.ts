@@ -6,6 +6,9 @@ import { AddLockComponent } from '../add-lock/add-lock.component';
 import { EditLockComponent } from '../edit-lock/edit-lock.component';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
+import { ModalController } from '@ionic/angular';
+import { ViewPermissionsPage } from '../view-permissions/view-permissions.page';
+import { BackButtonService } from '../services/back-button.service';
 
 const { Browser } = Plugins;
 
@@ -46,10 +49,12 @@ export class MyLocksPage implements OnInit {
   expandedLockId = '';
 
   constructor(
-    private lockService: LockService,
-    private loadingController: LoadingController,
-    private popoverController: PopoverController,
     private alertController: AlertController,
+    private backButton: BackButtonService,
+    private loadingController: LoadingController,
+    private lockService: LockService,
+    private modalController: ModalController,
+    private popoverController: PopoverController,
     private router: Router
   ) { }
 
@@ -64,11 +69,17 @@ export class MyLocksPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then(() => this.loadLocks());
+    popover.onDidDismiss().then((data) => {
+      this.backButton.setDefaultBackButton();
+      if (data.role !== 'backdrop' && data.data.reloadData) {
+        this.loadLocks();
+      }
+    });
     return await popover.present();
   }
 
   async deleteLock(lockId: string) {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Confirm!',
       message: 'Do you really want to delete this lock?',
@@ -83,6 +94,7 @@ export class MyLocksPage implements OnInit {
         }
       ]
     });
+    alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     await alert.present();
   }
 
@@ -105,7 +117,12 @@ export class MyLocksPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then(() => this.loadLocks());
+    popover.onDidDismiss().then((data) => {
+      this.backButton.setDefaultBackButton();
+      if (data.role !== 'backdrop' && data.data.reloadData) {
+        this.loadLocks();
+      }
+    });
     return await popover.present();
   }
 
@@ -190,8 +207,16 @@ export class MyLocksPage implements OnInit {
     this.router.navigate(['/logs'], { queryParams: { filter: true, lockId } });
   }
 
-  viewPermissions(lockId: string) {
-    this.router.navigateByUrl('/view-permissions/' + lockId);
+  async viewPermissions(lockId: string) {
+    const modal = await this.modalController.create({
+      component: ViewPermissionsPage,
+      animated: true,
+      componentProps: {
+        lockId
+      }
+    });
+    modal.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
+    return await modal.present();
   }
 
 }

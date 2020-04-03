@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BackButtonService } from '../services/back-button.service';
+import { MenuService } from '../services/menu.service';
 
 @Component({
   selector: 'app-how-to-use',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HowToUsePage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private backButton: BackButtonService,
+    public menu: MenuService
+  ) { }
 
   ngOnInit() {
+    this.backButton.setSecondaryBackButton();
   }
 
 }

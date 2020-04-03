@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-add-lock',
@@ -17,13 +17,16 @@ export class AddLockComponent implements OnInit {
   error = '';
 
   constructor(
-    private loadingController: LoadingController,
     private alertController: AlertController,
+    private backButton: BackButtonService,
+    private loadingController: LoadingController,
     private lockService: LockService,
     private popoverController: PopoverController
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.backButton.setPopoverBackButton();
+  }
 
   async addLock() {
     console.log('SUBMITTED');
@@ -36,7 +39,9 @@ export class AddLockComponent implements OnInit {
         this.lockService.editLock(this.lockId, this.alias, this.address, this.webcam).then((rdata2: any) => {
           if (rdata2.status) {
             this.showAlert();
-            this.popoverController.dismiss();
+            this.popoverController.dismiss({
+              reloadData: true
+            });
           } else {
             this.error = rdata2.content;
           }
@@ -49,12 +54,13 @@ export class AddLockComponent implements OnInit {
   }
 
   async showAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Lock added!',
       message: 'Lock ' + this.lockId + ' has been registered with your account',
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     await alert.present();
   }
 

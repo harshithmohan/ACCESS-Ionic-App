@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-logs-filter',
@@ -18,10 +19,12 @@ export class LogsFilterComponent implements OnInit {
   guestChecked = true;
 
   constructor(
+    private backButton: BackButtonService,
     private popoverController: PopoverController
   ) { }
 
   ngOnInit() {
+    this.backButton.setPopoverBackButton();
     if (this.filterOptions.operation === 'lock') {
       this.unlockChecked = false;
     } else if (this.filterOptions.operation === 'unlock') {
@@ -35,7 +38,9 @@ export class LogsFilterComponent implements OnInit {
   }
 
   async applyFilters() {
-    this.popoverController.dismiss(this.filterOptions);
+    this.popoverController.dismiss({
+      reloadData: true
+    });
   }
 
   async clearFilters() {
@@ -49,7 +54,9 @@ export class LogsFilterComponent implements OnInit {
     this.guestChecked = true;
     await this.setOperation();
     await this.setUserType();
-    this.popoverController.dismiss(this.filterOptions);
+    this.popoverController.dismiss({
+      reloadData: true
+    });
   }
 
   async setOperation() {

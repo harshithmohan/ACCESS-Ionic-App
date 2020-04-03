@@ -2,7 +2,7 @@
   <ion-toolbar color="tertiary">
     <ion-title>Logs</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-menu-button autoHide="false" menu="menu2"></ion-menu-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="showFilters($event)">
@@ -12,7 +12,50 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-menu side="start" menuId="menu2" contentId="content2">
+  <ion-header>
+    <ion-toolbar color="tertiary">
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-center">ACCESS</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-row class="ion-justify-content-center ion-margin-top" style="height: 15%">
+      <img src="/assets/logo.svg" alt="" style="height: 100%" />
+    </ion-row>
+    <ion-list>
+      <ion-item button lines="none" class="ion-margin-top" (click)="menu.gotoHome()">
+        <ion-icon name="home-outline" slot="start"></ion-icon>
+        <ion-label>Home</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="menu.gotoLogs()" color="primary">
+        <ion-icon name="analytics-outline" slot="start"></ion-icon>
+        <ion-label>View Logs</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="menu.gotoHowToUse()">
+        <ion-icon name="help-outline" slot="start"></ion-icon>
+        <ion-label>How to Use</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="menu.changePassword()">
+        <ion-icon name="keypad-outline" slot="start"></ion-icon>
+        <ion-label>Change Password</ion-label>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="menu.toggleFingerprint()">
+        <ion-icon name="finger-print-outline" slot="start"></ion-icon>
+        <ion-label>Fingerprint</ion-label>
+        <ion-toggle [(ngModel)]="menu.fingerprint"></ion-toggle>
+      </ion-item>
+      <ion-item button lines="none" class="ion-margin-top" (click)="menu.logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        <ion-label>Logout</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-content id="content2">
   <ion-refresher slot="fixed" (ionRefresh)="refreshLogs($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

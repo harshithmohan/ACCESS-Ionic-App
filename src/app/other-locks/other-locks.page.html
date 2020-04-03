@@ -106,13 +106,13 @@
     <ion-card-content *ngIf="lockId === expandedLockId" style="padding: 0;" [@inOutAnimation]>
       <ion-row style="padding: 0">
         <ion-col size="6" style="padding: 0;">
-          <ion-item color="tertiary" (click)="lockGuest(lockId)" button class="lock" mode="md">
+          <ion-item color="tertiary" (click)="guestLockOperations(lockId, 'lock')" button class="lock" mode="md">
             <ion-icon name="lock-closed" slot="start"></ion-icon>
             <ion-label>Lock</ion-label>
           </ion-item>
         </ion-col>
         <ion-col size="6" style="padding: 0;">
-          <ion-item color="secondary" (click)="unlockGuest(lockId)" button class="lock" mode="md">
+          <ion-item color="secondary" (click)="guestLockOperations(lockId, 'unlock')" button class="lock" mode="md">
             <ion-icon name="lock-open-outline" slot="start"></ion-icon>
             <ion-label>Unlock</ion-label>
           </ion-item>

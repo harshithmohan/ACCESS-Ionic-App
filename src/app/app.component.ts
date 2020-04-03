@@ -5,6 +5,7 @@ import { Plugins, PushNotification, PushNotificationToken, PushNotificationActio
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { NavigationBarPlugin } from 'capacitor-navigationbar';
+import { BackButtonService } from './services/back-button.service';
 
 const { PushNotifications, StatusBar, NavigationBar, SplashScreen } = Plugins;
 
@@ -16,10 +17,11 @@ const { PushNotifications, StatusBar, NavigationBar, SplashScreen } = Plugins;
 })
 export class AppComponent {
   constructor(
+    private alertController: AlertController,
+    private backButton: BackButtonService,
     private platform: Platform,
-    private storage: Storage,
     private router: Router,
-    private alertController: AlertController
+    private storage: Storage
   ) {
     this.initializeApp();
   }
@@ -60,12 +62,13 @@ export class AppComponent {
   }
 
   async showAlert(message: string) {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Alert!',
       message,
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.unsetAlertBackButton());
     await alert.present();
   }
 

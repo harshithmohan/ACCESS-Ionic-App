@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LockService } from '../services/lock.service';
 import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
+import { Plugins } from '@capacitor/core';
+import { BackButtonService } from '../services/back-button.service';
+
 
 @Component({
   selector: 'app-grant-permission',
@@ -21,13 +24,15 @@ export class GrantPermissionComponent implements OnInit {
   currentTime = new Date().toISOString();
 
   constructor(
+    private alertController: AlertController,
+    private backButton: BackButtonService,
     private lockService: LockService,
     private loadingController: LoadingController,
-    private popoverController: PopoverController,
-    private alertController: AlertController
+    private popoverController: PopoverController
   ) { }
 
   ngOnInit() {
+    this.backButton.setPopoverBackButton();
     this.user.lockId = this.lock.lockId;
   }
 
@@ -43,7 +48,9 @@ export class GrantPermissionComponent implements OnInit {
     await this.lockService.grantPermission(this.user).then((rdata: any) => {
       if (rdata.status) {
         this.showGrantedAlert();
-        this.popoverController.dismiss();
+        this.popoverController.dismiss({
+          reloadData: true
+        });
       } else {
         this.error = rdata.content;
       }
@@ -52,12 +59,13 @@ export class GrantPermissionComponent implements OnInit {
   }
 
   async showGrantedAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Permission Granted',
       message: 'Permission for ' + this.lock.alias + ' has been granted to ' + this.user.username,
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setModalBackButton());
     await alert.present();
   }
 

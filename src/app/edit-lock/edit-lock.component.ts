@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
 import { LockService } from '../services/lock.service';
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-edit-lock',
@@ -13,13 +14,16 @@ export class EditLockComponent implements OnInit {
   error = '';
 
   constructor(
-    private loadingController: LoadingController,
-    private popoverController: PopoverController,
     private alertController: AlertController,
-    private lockService: LockService
+    private backButton: BackButtonService,
+    private loadingController: LoadingController,
+    private lockService: LockService,
+    private popoverController: PopoverController
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.backButton.setPopoverBackButton();
+  }
 
   async editLock() {
     const loading = await this.loadingController.create({
@@ -29,7 +33,9 @@ export class EditLockComponent implements OnInit {
     this.lockService.editLock(this.lock.lockId, this.lock.alias, this.lock.address, this.lock.webcam).then((rdata: any) => {
       if (rdata.status) {
         this.showAlert();
-        this.popoverController.dismiss();
+        this.popoverController.dismiss({
+          reloadData: true
+        });
       } else {
         this.error = rdata.content;
       }
@@ -38,12 +44,13 @@ export class EditLockComponent implements OnInit {
   }
 
   async showAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Lock edited!',
       message: 'Lock has been edited',
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     await alert.present();
   }
 

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
+import { BackButtonService } from '../services/back-button.service';
+import { ViewPermissionsPage } from '../view-permissions/view-permissions.page';
+import { BleScanPage } from '../ble-scan/ble-scan.page';
 
 const { Browser } = Plugins;
 
@@ -44,8 +47,10 @@ export class OtherLocksPage implements OnInit {
   expandedLockId = '';
 
   constructor(
-    private lockService: LockService,
+    private backButton: BackButtonService,
     private loadingController: LoadingController,
+    private lockService: LockService,
+    private modalController: ModalController,
     private router: Router
   ) { }
 
@@ -93,6 +98,18 @@ export class OtherLocksPage implements OnInit {
     });
   }
 
+  async guestLockOperations(lockId: string, operation: string) {
+    const modal = await this.modalController.create({
+      component: BleScanPage,
+      animated: true,
+      componentProps: {
+        lockId,
+        operation
+      }
+    });
+    return await modal.present();
+  }
+
   async lock(lockId: string) {
     const loading = await this.loadingController.create({
       message: 'Locking ' + this.locks[lockId].alias + '...'
@@ -100,10 +117,6 @@ export class OtherLocksPage implements OnInit {
     loading.present();
     await this.lockService.lock(lockId);
     loading.dismiss();
-  }
-
-  async lockGuest(lockId: string) {
-    this.router.navigateByUrl('/ble-scan/' + lockId + '/lock');
   }
 
   refreshLocks(event) {
@@ -125,16 +138,20 @@ export class OtherLocksPage implements OnInit {
     loading.dismiss();
   }
 
-  async unlockGuest(lockId: string) {
-    this.router.navigateByUrl('/ble-scan/' + lockId + '/unlock');
-  }
-
   viewLogs(lockId: string) {
     this.router.navigate(['/logs'], { queryParams: { filter: true, lockId } });
   }
 
-  viewPermissions(lockId: string) {
-    this.router.navigateByUrl('/view-permissions/' + lockId);
+  async viewPermissions(lockId: string) {
+    const modal = await this.modalController.create({
+      component: ViewPermissionsPage,
+      animated: true,
+      componentProps: {
+        lockId
+      }
+    });
+    modal.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
+    return await modal.present();
   }
 
 }

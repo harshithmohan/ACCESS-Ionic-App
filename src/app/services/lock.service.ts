@@ -20,9 +20,6 @@ export class LockService {
   ) { }
 
   addTokens(data: any) {
-    console.log('Add Tokens');
-    console.log(this.accessToken);
-    console.log(this.refreshToken);
     return {
       content: data,
       accessToken: this.accessToken,

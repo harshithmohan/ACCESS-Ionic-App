@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
 import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-change-password',
@@ -15,13 +16,16 @@ export class ChangePasswordComponent implements OnInit {
   confirmNewPassword = '';
 
   constructor(
+    private alertController: AlertController,
+    private backButton: BackButtonService,
     private lockService: LockService,
     private loadingController: LoadingController,
-    private popoverController: PopoverController,
-    private alertController: AlertController
+    private popoverController: PopoverController
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.backButton.setPopoverBackButton();
+  }
 
   async changePassword() {
     const loading = await this.loadingController.create({
@@ -45,12 +49,13 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   async showChangedPasswordAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Password changed!',
       message: 'Your password has been successfully changed.',
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.unsetAlertBackButton());
     await alert.present();
   }
 }

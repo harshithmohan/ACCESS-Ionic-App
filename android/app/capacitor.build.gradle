@@ -9,7 +9,6 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':cap-bluetooth-low-energy-client')
     implementation project(':capacitor-fingerprint-auth')
     implementation project(':capacitor-navigationbar')
 

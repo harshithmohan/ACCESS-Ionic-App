@@ -5,8 +5,8 @@ import { LockService } from '../services/lock.service';
 import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FingerPrintAuth } from 'capacitor-fingerprint-auth';
-import { Plugins } from '@capacitor/core';
-const { App } = Plugins;
+import { BackButtonService } from '../services/back-button.service';
+import { MenuService } from '../services/menu.service';
 
 @Component({
   selector: 'app-home',
@@ -22,17 +22,19 @@ export class HomePage implements OnInit {
   error: string = null;
 
   constructor(
-    private router: Router,
+    private alertController: AlertController,
+    private backButton: BackButtonService,
     private formBuilder: FormBuilder,
+    private fpAuth: FingerPrintAuth,
     private loadingController: LoadingController,
     private lockService: LockService,
-    private storage: Storage,
-    private fpAuth: FingerPrintAuth,
-    private alertController: AlertController
+    private menu: MenuService,
+    private router: Router,
+    private storage: Storage
   ) {}
 
   ngOnInit() {
-    App.addListener('backButton', () => App.exitApp());
+    this.backButton.setDefaultBackButton();
     this.checkIfLoggedIn();
 
     this.loginForm = this.formBuilder.group({
@@ -75,6 +77,7 @@ export class HomePage implements OnInit {
       details[key] = value;
     });
     if (details.username !== null) {
+      this.menu.fingerprint = details.fingerprint;
       await this.getNewToken(details).then(val => {
         if (details.fingerprint) {
           this.fpAuth.verify().then(result => {
@@ -195,12 +198,13 @@ export class HomePage implements OnInit {
   }
 
   async showRegisteredAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Account Registered!',
       message: 'Please confirm your email address and login',
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     await alert.present();
   }
 

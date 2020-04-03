@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { LockService } from '../services/lock.service';
 import { timer } from 'rxjs';
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-ble-scan',
@@ -12,30 +13,25 @@ import { timer } from 'rxjs';
 })
 export class BleScanPage implements OnInit {
 
-  lockId: string;
-  operation: string;
+  @Input() lockId: string;
+  @Input() operation: string;
   btAddress: string;
 
   constructor(
     private alertController: AlertController,
-    private loadingController: LoadingController,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
+    private backButton: BackButtonService,
     private ble: BluetoothLE,
-    private lockService: LockService
+    private loadingController: LoadingController,
+    private lockService: LockService,
+    private router: Router
   ) { }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      console.log(params);
-      this.lockId = params.lockId;
-      this.operation = params.operation;
-      this.lockService.getBluetoothAddress(this.lockId).then((rdata: any) => {
-        if (rdata.status) {
-          this.btAddress = rdata.content;
-          this.checkPermissions();
-        }
-      });
+    this.lockService.getBluetoothAddress(this.lockId).then((rdata: any) => {
+      if (rdata.status) {
+        this.btAddress = rdata.content;
+        this.checkPermissions();
+      }
     });
   }
 
@@ -127,16 +123,18 @@ export class BleScanPage implements OnInit {
   }
 
   async showAlert(header: string, message: string) {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header,
       message,
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     await alert.present();
   }
 
   async showUnableAuthAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Error',
       message: 'Unable to authenticate. Please try again',
@@ -151,7 +149,7 @@ export class BleScanPage implements OnInit {
         }
       ]
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     await alert.present();
   }
 

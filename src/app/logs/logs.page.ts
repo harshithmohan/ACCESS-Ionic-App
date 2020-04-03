@@ -3,6 +3,8 @@ import { LockService } from '../services/lock.service';
 import { LoadingController, PopoverController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { LogsFilterComponent } from '../logs-filter/logs-filter.component';
+import { BackButtonService } from '../services/back-button.service';
+import { MenuService } from '../services/menu.service';
 
 @Component({
   selector: 'app-logs',
@@ -27,22 +29,29 @@ export class LogsPage implements OnInit {
   searchQuery = '';
 
   constructor(
+    private activatedRoute: ActivatedRoute,
+    private backButton: BackButtonService,
+    public menu: MenuService,
     private lockService: LockService,
     private loadingController: LoadingController,
     private popoverController: PopoverController,
-    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.backButton.setSecondaryBackButton();
     this.activatedRoute.queryParams.subscribe(params => {
       this.filter = params.filter;
       this.filterOptions.lockId = params.lockId;
-      this.loadLogs();
+      this.getLogs();
       this.getLocks();
     });
   }
 
   async applyFilters() {
+    const loading = await this.loadingController.create({
+      message: 'Applying filters...'
+    });
+    loading.present();
     console.log(this.filterOptions);
     this.logs = this.allLogs;
     if (this.filterOptions.lockId !== undefined) {
@@ -99,6 +108,7 @@ export class LogsPage implements OnInit {
       });
       this.logs = tempLogs;
     }
+    loading.dismiss();
   }
 
   async getLocks() {
@@ -114,6 +124,10 @@ export class LogsPage implements OnInit {
   }
 
   async getLogs() {
+    const loading = await this.loadingController.create({
+      message: 'Please wait...'
+    });
+    loading.present();
     this.logs = [];
     this.allLogs = [];
     this.lockService.getLogs().then((rdata: any) => {
@@ -122,29 +136,12 @@ export class LogsPage implements OnInit {
         this.allLogs = temp.logs;
         this.logs = temp.logs;
         this.users = temp.users;
+        loading.dismiss();
         if (this.filter) {
-          this.loadFilters();
+          this.applyFilters();
         }
       }
     });
-  }
-
-  async loadFilters() {
-    const loading = await this.loadingController.create({
-      message: 'Please wait...'
-    });
-    loading.present();
-    await this.applyFilters();
-    loading.dismiss();
-  }
-
-  async loadLogs() {
-    const loading = await this.loadingController.create({
-      message: 'Please wait...'
-    });
-    loading.present();
-    await this.getLogs();
-    loading.dismiss();
   }
 
   lockCompare(a: Lock, b: Lock) {
@@ -188,9 +185,10 @@ export class LogsPage implements OnInit {
       showBackdrop: true
     });
     popover.style.cssText = '--width: 94vw;';
-    popover.onDidDismiss().then(data => {
-      if (data !== null) {
-        this.loadFilters();
+    popover.onDidDismiss().then((data) => {
+      this.backButton.setSecondaryBackButton();
+      if (data.role !== 'backdrop' && data.data.reloadData) {
+        this.applyFilters();
       }
     });
     return await popover.present();

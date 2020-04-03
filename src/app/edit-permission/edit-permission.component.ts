@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
 import { LockService } from '../services/lock.service';
+import { BackButtonService } from '../services/back-button.service';
 
 @Component({
   selector: 'app-edit-permission',
@@ -14,15 +15,15 @@ export class EditPermissionComponent implements OnInit {
   currentTime = new Date().toISOString();
 
   constructor(
+    private alertController: AlertController,
+    private backButton: BackButtonService,
     private loadingController: LoadingController,
     private lockService: LockService,
-    private popoverController: PopoverController,
-    private alertController: AlertController
+    private popoverController: PopoverController
   ) { }
 
   ngOnInit() {
-    console.log(this.permission);
-    console.log(new Date(this.permission.expiryActual));
+    this.backButton.setPopoverBackButton();
   }
 
   async editPermission() {
@@ -39,7 +40,9 @@ export class EditPermissionComponent implements OnInit {
     await this.lockService.editPermission(this.permission).then((rdata: any) => {
       if (rdata.status) {
         this.showAlert();
-        this.popoverController.dismiss();
+        this.popoverController.dismiss({
+          reloadData: true
+        });
       } else {
         this.error = rdata.content;
       }
@@ -48,12 +51,13 @@ export class EditPermissionComponent implements OnInit {
   }
 
   async showAlert() {
+    this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Permission edited!',
       message: 'Permission has been edited',
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(() => this.backButton.setModalBackButton());
     await alert.present();
   }
 
