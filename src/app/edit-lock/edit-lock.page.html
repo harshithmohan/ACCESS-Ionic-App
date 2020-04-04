@@ -1,4 +1,4 @@
-<ion-grid>
+<div class="modal-content">
   <ion-header>
     <ion-toolbar color="tertiary">
       <ion-title class="ion-text-center">
@@ -7,34 +7,35 @@
     </ion-toolbar>
   </ion-header>
   <ion-row class="ion-justify-content-center">
-    <form #editLockForm="ngForm" (ngSubmit)="editLock()" style="width: 100vw">
+    <form [formGroup]="editLockForm" style="width: 90vw">
       <ion-row class="ion-justify-content-center">
         <ion-text color="danger" class="ion-text-center">{{ error }}</ion-text>
       </ion-row>
 
       <ion-item>
         <ion-label position="stacked">Alias</ion-label>
-        <ion-input type="text" name="alias" [(ngModel)]="lock.alias" required></ion-input>
+        <ion-input type="text" formControlName="alias"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Address</ion-label>
-        <ion-input type="text" name="address" [(ngModel)]="lock.address" required></ion-input>
+        <ion-input type="text" formControlName="address"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label>Webcam</ion-label>
-        <ion-toggle name="webcam" [(ngModel)]="lock.webcam"></ion-toggle>
+        <ion-label style="font-size: 12px">Webcam</ion-label>
+        <ion-toggle formControlName="webcam"></ion-toggle>
       </ion-item>
 
       <ion-row class="ion-justify-content-center">
         <ion-col size="10">
-          <ion-button class="ion-justify-content-center" size="large" expand="block" color="tertiary" type="submit"
-            style="--border-radius: 100px; font-size: 0.8rem;" [disabled]='!editLockForm.valid'>
-            Edit
+          <ion-button class="ion-justify-content-center" size="large" expand="block"
+            style="--border-radius: 100px; font-size: 0.8rem; margin-top: 5%" color="tertiary" (click)="editLock()"
+            [attr.disabled]="editLockForm.invalid ? 'true' : 'false'">
+            Submit
           </ion-button>
         </ion-col>
       </ion-row>
     </form>
   </ion-row>
-</ion-grid>
+</div>

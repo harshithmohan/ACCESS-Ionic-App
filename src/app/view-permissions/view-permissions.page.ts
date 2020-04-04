@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LockService } from '../services/lock.service';
-import { LoadingController, AlertController, PopoverController, ModalController } from '@ionic/angular';
+import { LoadingController, AlertController, ModalController } from '@ionic/angular';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { EditPermissionComponent } from '../edit-permission/edit-permission.component';
-import { GrantPermissionComponent } from '../grant-permission/grant-permission.component';
 import { BackButtonService } from '../services/back-button.service';
+import { GrantPermissionPage } from '../grant-permission/grant-permission.page';
+import { EditPermissionPage } from '../edit-permission/edit-permission.page';
 
 @Component({
   selector: 'app-view-permissions',
@@ -35,8 +35,7 @@ export class ViewPermissionsPage implements OnInit {
     private backButton: BackButtonService,
     private lockService: LockService,
     private loadingController: LoadingController,
-    private modalController: ModalController,
-    private popoverController: PopoverController
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -51,20 +50,21 @@ export class ViewPermissionsPage implements OnInit {
   async editPermission(tempPermission: Permission) {
     const permission: any = tempPermission;
     permission.lockId = this.lockId;
-    const popover = await this.popoverController.create({
-      component: EditPermissionComponent,
+    const modal = await this.modalController.create({
+      component: EditPermissionPage,
       componentProps: { permission },
       animated: true,
-      showBackdrop: true
+      cssClass: 'auto-height',
+      backdropDismiss: true,
+      mode: 'ios',
+      presentingElement: await this.modalController.getTop()
     });
-    popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then((data) => {
-      this.backButton.setModalBackButton();
+    modal.onDidDismiss().then((data) => {
       if (data.role !== 'backdrop' && data.data.reloadData) {
         this.getPermissions();
       }
     });
-    return await popover.present();
+    return await modal.present();
   }
 
   expandPermission(username: string) {
@@ -94,20 +94,21 @@ export class ViewPermissionsPage implements OnInit {
       lockId: this.lockId,
       alias: this.lockAlias
     };
-    const popover = await this.popoverController.create({
-      component: GrantPermissionComponent,
+    const modal = await this.modalController.create({
+      component: GrantPermissionPage,
       componentProps: { lock },
       animated: true,
-      showBackdrop: true
+      cssClass: 'auto-height',
+      backdropDismiss: true,
+      mode: 'ios',
+      presentingElement: await this.modalController.getTop()
     });
-    popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then((data) => {
-      this.backButton.setModalBackButton();
+    modal.onDidDismiss().then((data) => {
       if (data.role !== 'backdrop' && data.data.reloadData) {
         this.getPermissions();
       }
     });
-    return await popover.present();
+    return await modal.present();
   }
 
   async revokePermission(username: string) {

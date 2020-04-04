@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { EditLockComponent } from './edit-lock.component';
+import { EditLockPage } from './edit-lock.page';
 
-describe('EditLockComponent', () => {
-  let component: EditLockComponent;
-  let fixture: ComponentFixture<EditLockComponent>;
+describe('EditLockPage', () => {
+  let component: EditLockPage;
+  let fixture: ComponentFixture<EditLockPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditLockComponent ],
+      declarations: [ EditLockPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditLockComponent);
+    fixture = TestBed.createComponent(EditLockPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

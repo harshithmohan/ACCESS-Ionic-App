@@ -30,10 +30,48 @@ ion-card-title {
 }
 
 ion-card {
+    border-radius: 10px !important;
     margin-top: 2vh;
     margin-bottom: 1vh;
 }
 
 ion-popover {
     z-index: 20100 !important;
+}
+
+.add-lock-modal .modal-wrapper {
+   height: 20%;
+   top: 80%;
+   position: absolute; 
+   display: block;  
+}
+
+.modal-wrapper.sc-ion-modal-ios {
+    height: auto !important;
+}
+
+ion-modal.primary {
+    transform: none !important;
+    animation-fill-mode: none !important;
+    animation-timing-function: none !important;
+    animation-direction: none !important;
+    animation-name: none !important;
+    animation-iteration-count: none !important;
+}
+
+ion-modal.auto-height {
+    --height: auto;
+    align-items: flex-end;
+
+    .ion-page {
+        position: relative;
+        display: block;
+        contain: content;
+
+        .modal-content {
+            max-height: 80vh;
+            overflow: auto;
+            // padding: 10px;
+        }
+    }
 }

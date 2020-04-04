@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { EditPermissionComponent } from './edit-permission.component';
+import { GrantPermissionPage } from './grant-permission.page';
 
-describe('EditPermissionComponent', () => {
-  let component: EditPermissionComponent;
-  let fixture: ComponentFixture<EditPermissionComponent>;
+describe('GrantPermissionPage', () => {
+  let component: GrantPermissionPage;
+  let fixture: ComponentFixture<GrantPermissionPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditPermissionComponent ],
+      declarations: [ GrantPermissionPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditPermissionComponent);
+    fixture = TestBed.createComponent(GrantPermissionPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

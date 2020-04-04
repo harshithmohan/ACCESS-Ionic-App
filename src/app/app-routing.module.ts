@@ -32,6 +32,26 @@ const routes: Routes = [
     path: 'how-to-use',
     loadChildren: () => import('./how-to-use/how-to-use.module').then( m => m.HowToUsePageModule)
   },
+  {
+    path: 'add-lock',
+    loadChildren: () => import('./add-lock/add-lock.module').then( m => m.AddLockPageModule)
+  },
+  {
+    path: 'edit-lock',
+    loadChildren: () => import('./edit-lock/edit-lock.module').then( m => m.EditLockPageModule)
+  },
+  {
+    path: 'edit-permission',
+    loadChildren: () => import('./edit-permission/edit-permission.module').then( m => m.EditPermissionPageModule)
+  },
+  {
+    path: 'grant-permission',
+    loadChildren: () => import('./grant-permission/grant-permission.module').then( m => m.GrantPermissionPageModule)
+  },
+  {
+    path: 'change-password',
+    loadChildren: () => import('./change-password/change-password.module').then( m => m.ChangePasswordPageModule)
+  },
 ];
 
 @NgModule({

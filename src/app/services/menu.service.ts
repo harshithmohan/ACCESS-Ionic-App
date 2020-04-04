@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LockService } from './lock.service';
 import { Router } from '@angular/router';
-import { ChangePasswordComponent } from '../change-password/change-password.component';
-import { PopoverController, MenuController } from '@ionic/angular';
+import { ChangePasswordPage } from '../change-password/change-password.page';
+import { ModalController, MenuController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
 @Injectable({
@@ -15,19 +15,18 @@ export class MenuService {
   constructor(
     private lockService: LockService,
     private menuController: MenuController,
-    private popoverController: PopoverController,
+    private modalController: ModalController,
     private router: Router,
     private storage: Storage
   ) { }
 
   async changePassword() {
-    const popover = await this.popoverController.create({
-      component: ChangePasswordComponent,
+    const modal = await this.modalController.create({
+      component: ChangePasswordPage,
       animated: true,
-      showBackdrop: true
+      cssClass: 'auto-height'
     });
-    popover.style.cssText = '--width: 80vw;';
-    return await popover.present();
+    return await modal.present();
   }
 
   gotoHome() {

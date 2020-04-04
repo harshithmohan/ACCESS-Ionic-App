@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { LockService } from '../services/lock.service';
-import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
+import { LoadingController, AlertController } from '@ionic/angular';
 import { trigger, transition, style, animate, query } from '@angular/animations';
-import { AddLockComponent } from '../add-lock/add-lock.component';
-import { EditLockComponent } from '../edit-lock/edit-lock.component';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
 import { ModalController } from '@ionic/angular';
 import { ViewPermissionsPage } from '../view-permissions/view-permissions.page';
 import { BackButtonService } from '../services/back-button.service';
+import { AddLockPage } from '../add-lock/add-lock.page';
+import { EditLockPage } from '../edit-lock/edit-lock.page';
 
 const { Browser } = Plugins;
 
@@ -54,7 +54,6 @@ export class MyLocksPage implements OnInit {
     private loadingController: LoadingController,
     private lockService: LockService,
     private modalController: ModalController,
-    private popoverController: PopoverController,
     private router: Router
   ) { }
 
@@ -63,19 +62,18 @@ export class MyLocksPage implements OnInit {
   }
 
   async addLock() {
-    const popover = await this.popoverController.create({
-      component: AddLockComponent,
+    const modal = await this.modalController.create({
+      component: AddLockPage,
       animated: true,
-      showBackdrop: true
+      cssClass: 'auto-height'
     });
-    popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then((data) => {
+    modal.onDidDismiss().then((data) => {
       this.backButton.setDefaultBackButton();
       if (data.role !== 'backdrop' && data.data.reloadData) {
         this.loadLocks();
       }
     });
-    return await popover.present();
+    return await modal.present();
   }
 
   async deleteLock(lockId: string) {
@@ -110,20 +108,19 @@ export class MyLocksPage implements OnInit {
   }
 
   async editLock(lock: Lock) {
-    const popover = await this.popoverController.create({
-      component: EditLockComponent,
+    const modal = await this.modalController.create({
+      component: EditLockPage,
       componentProps: { lock },
       animated: true,
-      showBackdrop: true
+      cssClass: 'auto-height'
     });
-    popover.style.cssText = '--width: 80vw;';
-    popover.onDidDismiss().then((data) => {
+    modal.onDidDismiss().then((data) => {
       this.backButton.setDefaultBackButton();
       if (data.role !== 'backdrop' && data.data.reloadData) {
         this.loadLocks();
       }
     });
-    return await popover.present();
+    return await modal.present();
   }
 
   expandLock(lockId: string) {
@@ -152,7 +149,7 @@ export class MyLocksPage implements OnInit {
     this.lockSet = new Set();
     this.lockSetFav = new Set();
     this.lockSetInvalid = new Set();
-    this.lockService.getLocks().then((rdata: any) => {
+    await this.lockService.getLocks().then((rdata: any) => {
       this.locks = rdata.content;
       Object.keys(this.locks).forEach((lockId: string) => {
         if (this.locks[lockId].alias === null || this.locks[lockId].address === null) {
@@ -211,9 +208,11 @@ export class MyLocksPage implements OnInit {
     const modal = await this.modalController.create({
       component: ViewPermissionsPage,
       animated: true,
+      backdropDismiss: false,
       componentProps: {
         lockId
-      }
+      },
+      cssClass: 'primary'
     });
     modal.onDidDismiss().then(() => this.backButton.setDefaultBackButton());
     return await modal.present();

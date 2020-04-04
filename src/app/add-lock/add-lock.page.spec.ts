@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { GrantPermissionComponent } from './grant-permission.component';
+import { AddLockPage } from './add-lock.page';
 
-describe('GrantPermissionComponent', () => {
-  let component: GrantPermissionComponent;
-  let fixture: ComponentFixture<GrantPermissionComponent>;
+describe('AddLockPage', () => {
+  let component: AddLockPage;
+  let fixture: ComponentFixture<AddLockPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GrantPermissionComponent ],
+      declarations: [ AddLockPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GrantPermissionComponent);
+    fixture = TestBed.createComponent(AddLockPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

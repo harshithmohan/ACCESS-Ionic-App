@@ -1,31 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { LockService } from '../services/lock.service';
-import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { BackButtonService } from '../services/back-button.service';
+import { LockService } from '../services/lock.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-lock',
-  templateUrl: './add-lock.component.html',
-  styleUrls: ['./add-lock.component.scss'],
+  templateUrl: './add-lock.page.html',
+  styleUrls: ['./add-lock.page.scss'],
 })
-export class AddLockComponent implements OnInit {
+export class AddLockPage implements OnInit {
 
-  lockId = '';
-  alias = '';
-  address = '';
-  webcam = false;
   error = '';
+  addLockForm: FormGroup;
 
   constructor(
     private alertController: AlertController,
     private backButton: BackButtonService,
+    private formBuilder: FormBuilder,
     private loadingController: LoadingController,
     private lockService: LockService,
-    private popoverController: PopoverController
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
-    this.backButton.setPopoverBackButton();
+    this.backButton.setModalBackButton();
+
+    this.addLockForm = this.formBuilder.group({
+      lockId: ['', Validators.required],
+      alias: ['', Validators.required],
+      address: ['', Validators.required],
+      webcam: [false, Validators.required]
+    });
   }
 
   async addLock() {
@@ -34,12 +40,13 @@ export class AddLockComponent implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    await this.lockService.addLock(this.lockId).then((rdata: any) => {
+    const lockForm = this.addLockForm.value;
+    await this.lockService.addLock(lockForm.lockId).then((rdata: any) => {
       if (rdata.status) {
-        this.lockService.editLock(this.lockId, this.alias, this.address, this.webcam).then((rdata2: any) => {
+        this.lockService.editLock(lockForm.lockId, lockForm.alias, lockForm.address, lockForm.webcam).then((rdata2: any) => {
           if (rdata2.status) {
             this.showAlert();
-            this.popoverController.dismiss({
+            this.modalController.dismiss({
               reloadData: true
             });
           } else {
@@ -57,7 +64,7 @@ export class AddLockComponent implements OnInit {
     this.backButton.setAlertBackButton();
     const alert = await this.alertController.create({
       header: 'Lock added!',
-      message: 'Lock ' + this.lockId + ' has been registered with your account',
+      message: 'Lock ' + this.addLockForm.value.lockId + ' has been registered with your account',
       buttons: ['OK']
     });
     alert.onDidDismiss().then(() => this.backButton.setDefaultBackButton());

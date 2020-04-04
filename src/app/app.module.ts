@@ -15,33 +15,23 @@ import { IonicStorageModule } from '@ionic/storage';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 
-import { GrantPermissionComponent } from './grant-permission/grant-permission.component';
-import { EditPermissionComponent } from './edit-permission/edit-permission.component';
-import { AddLockComponent } from './add-lock/add-lock.component';
-import { EditLockComponent } from './edit-lock/edit-lock.component';
 import { LogsFilterComponent } from './logs-filter/logs-filter.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
 
 import { ViewPermissionsPageModule } from './view-permissions/view-permissions.module';
 import { BleScanPageModule } from './ble-scan/ble-scan.module';
+import { AddLockPageModule } from './add-lock/add-lock.module';
+import { EditLockPageModule } from './edit-lock/edit-lock.module';
+import { GrantPermissionPageModule } from './grant-permission/grant-permission.module';
+import { EditPermissionPageModule } from './edit-permission/edit-permission.module';
+import { ChangePasswordPageModule } from './change-password/change-password.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GrantPermissionComponent,
-    EditPermissionComponent,
-    AddLockComponent,
-    EditLockComponent,
-    LogsFilterComponent,
-    ChangePasswordComponent
+    LogsFilterComponent
   ],
   entryComponents: [
-    GrantPermissionComponent,
-    EditPermissionComponent,
-    AddLockComponent,
-    EditLockComponent,
-    LogsFilterComponent,
-    ChangePasswordComponent
+    LogsFilterComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +43,12 @@ import { BleScanPageModule } from './ble-scan/ble-scan.module';
     FormsModule,
     ReactiveFormsModule,
     ViewPermissionsPageModule,
-    BleScanPageModule
+    BleScanPageModule,
+    AddLockPageModule,
+    EditLockPageModule,
+    GrantPermissionPageModule,
+    EditPermissionPageModule,
+    ChangePasswordPageModule
   ],
   providers: [
     FingerPrintAuth,

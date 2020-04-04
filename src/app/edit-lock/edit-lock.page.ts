@@ -1,28 +1,37 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
-import { LockService } from '../services/lock.service';
 import { BackButtonService } from '../services/back-button.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LockService } from '../services/lock.service';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-lock',
-  templateUrl: './edit-lock.component.html',
-  styleUrls: ['./edit-lock.component.scss'],
+  templateUrl: './edit-lock.page.html',
+  styleUrls: ['./edit-lock.page.scss'],
 })
-export class EditLockComponent implements OnInit {
+export class EditLockPage implements OnInit {
 
+  editLockForm: FormGroup;
   @Input() lock: Lock;
   error = '';
 
   constructor(
     private alertController: AlertController,
     private backButton: BackButtonService,
+    private formBuilder: FormBuilder,
     private loadingController: LoadingController,
     private lockService: LockService,
-    private popoverController: PopoverController
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
-    this.backButton.setPopoverBackButton();
+    this.backButton.setModalBackButton();
+
+    this.editLockForm = this.formBuilder.group({
+      alias: [this.lock.alias, Validators.required],
+      address: [this.lock.address, Validators.required],
+      webcam: [this.lock.webcam, Validators.required]
+    });
   }
 
   async editLock() {
@@ -30,10 +39,11 @@ export class EditLockComponent implements OnInit {
       message: 'Please wait...'
     });
     loading.present();
-    this.lockService.editLock(this.lock.lockId, this.lock.alias, this.lock.address, this.lock.webcam).then((rdata: any) => {
+    const lockForm = this.editLockForm.value;
+    this.lockService.editLock(this.lock.lockId, lockForm.alias, lockForm.address, lockForm.webcam).then((rdata: any) => {
       if (rdata.status) {
         this.showAlert();
-        this.popoverController.dismiss({
+        this.modalController.dismiss({
           reloadData: true
         });
       } else {

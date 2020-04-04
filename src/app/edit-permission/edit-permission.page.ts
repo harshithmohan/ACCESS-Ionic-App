@@ -1,15 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { LoadingController, PopoverController, AlertController } from '@ionic/angular';
 import { LockService } from '../services/lock.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BackButtonService } from '../services/back-button.service';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-permission',
-  templateUrl: './edit-permission.component.html',
-  styleUrls: ['./edit-permission.component.scss'],
+  templateUrl: './edit-permission.page.html',
+  styleUrls: ['./edit-permission.page.scss'],
 })
-export class EditPermissionComponent implements OnInit {
+export class EditPermissionPage implements OnInit {
 
+  editPermissionForm: FormGroup;
   @Input() permission: Permission;
   error = '';
   currentTime = new Date().toISOString();
@@ -17,30 +19,42 @@ export class EditPermissionComponent implements OnInit {
   constructor(
     private alertController: AlertController,
     private backButton: BackButtonService,
+    private formBuilder: FormBuilder,
     private loadingController: LoadingController,
     private lockService: LockService,
-    private popoverController: PopoverController
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
-    this.backButton.setPopoverBackButton();
+    this.backButton.setModalBackButton();
+    this.editPermissionForm = this.formBuilder.group({
+      username: [this.permission.username, Validators.required],
+      userType: [this.permission.userType, Validators.required],
+      expiry: [this.permission.expiryActual]
+    });
   }
 
   async editPermission() {
-    console.log('SUBMITTED');
-    console.log(this.permission);
-    if (this.permission.userType === 'Guest' && this.permission.expiryActual === null) {
+    const permForm = this.editPermissionForm.value;
+    if (permForm.userType === 'Guest' && permForm.expiryActual === null) {
       this.error = 'Please enter expiry date and time';
       return;
     }
+    const permission = {
+      lockId: this.permission.lockId,
+      username: permForm.username,
+      userType: permForm.userType,
+      expiryActual: permForm.expiry,
+      expiryDisplay: null
+    };
     const loading = await this.loadingController.create({
       message: 'Please wait...'
     });
     loading.present();
-    await this.lockService.editPermission(this.permission).then((rdata: any) => {
+    await this.lockService.editPermission(permission).then((rdata: any) => {
       if (rdata.status) {
         this.showAlert();
-        this.popoverController.dismiss({
+        this.modalController.dismiss({
           reloadData: true
         });
       } else {
