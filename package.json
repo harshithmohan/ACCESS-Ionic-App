@@ -21,7 +21,7 @@
     "@angular/platform-browser": "~8.1.2",
     "@angular/platform-browser-dynamic": "~8.1.2",
     "@angular/router": "~8.1.2",
-    "@capacitor/android": "^1.5.2",
+    "@capacitor/android": "^2.0.0",
     "@capacitor/core": "1.4.0",
     "@ionic-native/bluetooth-le": "^5.23.0",
     "@ionic-native/core": "^5.23.0",
@@ -31,7 +31,8 @@
     "capacitor-navigationbar": "0.0.2",
     "cordova-plugin-bluetoothle": "^4.5.9",
     "core-js": "^2.5.4",
-    "rxjs": "~6.5.1",
+    "jetifier": "^1.6.5",
+    "rxjs": "^6.5.5",
     "tslib": "^1.11.1",
     "zone.js": "~0.9.1"
   },
@@ -67,5 +68,6 @@
     "plugins": {
       "com.telerik.plugins.nativepagetransitions": {}
     }
-  }
+  },
+  "postinstall": "jetifier"
 }
