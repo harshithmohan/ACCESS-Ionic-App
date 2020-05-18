@@ -65,17 +65,23 @@
   <ion-card *ngFor="let log of logs" mode="ios">
     <ion-card-header>
       <ion-row>
-        <ion-col size="2">
+        <ion-col size="2" *ngIf="log.operation !== 'doorbell'">
           <ion-icon size="large" [attr.name]="log.operation === 'lock' ? 'lock-closed' : 'lock-open-outline'"
             [attr.color]="log.operation === 'lock' ? 'tertiary' : 'primary'"></ion-icon>
         </ion-col>
-        <ion-col size="10">
+        <ion-col size="2" *ngIf="log.operation === 'doorbell'">
+          <ion-icon size="large" name="notifications-outline" color="primary"></ion-icon>
+        </ion-col>
+        <ion-col size="8">
           <ion-row>
             <ion-card-title>{{ log.lock }}</ion-card-title>
           </ion-row>
           <ion-row>
-            <ion-card-subtitle>At {{ log.time }} by {{ log.username }}</ion-card-subtitle>
+            <ion-card-subtitle>At {{ log.time }} <span *ngIf="log.operation !== 'doorbell'">by {{ log.username }}</span></ion-card-subtitle>
           </ion-row>
+        </ion-col>
+        <ion-col size="2" *ngIf="log.operation === 'doorbell'" (click)="showImages($event, log.images)">
+          <ion-icon size="large" name="images" color="primary"></ion-icon>
         </ion-col>
       </ion-row>
     </ion-card-header>

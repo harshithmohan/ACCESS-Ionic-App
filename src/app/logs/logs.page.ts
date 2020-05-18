@@ -3,6 +3,7 @@ import { LockService } from '../services/lock.service';
 import { LoadingController, PopoverController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { LogsFilterComponent } from '../logs-filter/logs-filter.component';
+import { LogsImagesComponent } from '../logs-images/logs-images.component';
 import { BackButtonService } from '../services/back-button.service';
 import { MenuService } from '../services/menu.service';
 
@@ -194,6 +195,21 @@ export class LogsPage implements OnInit {
     return await popover.present();
   }
 
+  async showImages(ev: any, images: Array<string>) {
+    const popover = await this.popoverController.create({
+      component: LogsImagesComponent,
+      componentProps: { images },
+      animated: true,
+      event: ev,
+      showBackdrop: true,
+    });
+    popover.style.cssText = '--width: 94vw;';
+    popover.onDidDismiss().then(() => {
+      this.backButton.setSecondaryBackButton();
+    });
+    return await popover.present();
+  }
+
 }
 
 interface Log {
@@ -204,6 +220,7 @@ interface Log {
   isoTime: string;
   userType: string;
   operation: string;
+  images: Array<string>;
 }
 
 interface FilterOptions {

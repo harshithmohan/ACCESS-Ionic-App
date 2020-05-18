@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 
 import { LogsFilterComponent } from './logs-filter/logs-filter.component';
+import { LogsImagesComponent } from './logs-images/logs-images.component';
 
 import { ViewPermissionsPageModule } from './view-permissions/view-permissions.module';
 import { BleScanPageModule } from './ble-scan/ble-scan.module';
@@ -28,10 +29,12 @@ import { ChangePasswordPageModule } from './change-password/change-password.modu
 @NgModule({
   declarations: [
     AppComponent,
-    LogsFilterComponent
+    LogsFilterComponent,
+    LogsImagesComponent
   ],
   entryComponents: [
-    LogsFilterComponent
+    LogsFilterComponent,
+    LogsImagesComponent
   ],
   imports: [
     BrowserModule,
