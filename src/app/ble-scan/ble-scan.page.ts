@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { LockService } from '../services/lock.service';
 import { timer } from 'rxjs';
 import { BackButtonService } from '../services/back-button.service';
@@ -21,9 +20,9 @@ export class BleScanPage implements OnInit {
     private alertController: AlertController,
     private backButton: BackButtonService,
     private ble: BluetoothLE,
+    private modalController: ModalController,
     private loadingController: LoadingController,
-    private lockService: LockService,
-    private router: Router
+    private lockService: LockService
   ) { }
 
   ngOnInit() {
@@ -100,7 +99,7 @@ export class BleScanPage implements OnInit {
                 this.lockService.lockGuest(this.lockId, device.services[2].uuid).then((rdata: any) => {
                   loading.dismiss();
                   if (rdata.status) {
-                    this.router.navigateByUrl('/tabs/other-locks');
+                    this.modalController.dismiss();
                   } else {
                     this.showUnableAuthAlert();
                   }
@@ -109,7 +108,7 @@ export class BleScanPage implements OnInit {
                 this.lockService.unlockGuest(this.lockId, device.services[2].uuid).then((rdata: any) => {
                   loading.dismiss();
                   if (rdata.status) {
-                    this.router.navigateByUrl('/tabs/other-locks');
+                    this.modalController.dismiss();
                   } else {
                     this.showUnableAuthAlert();
                   }
@@ -141,7 +140,7 @@ export class BleScanPage implements OnInit {
       buttons: [
         {
           text: 'Cancel',
-          handler: () => this.router.navigateByUrl('/tabs/other-locks')
+          handler: () => this.modalController.dismiss()
         },
         {
           text: 'Retry',
