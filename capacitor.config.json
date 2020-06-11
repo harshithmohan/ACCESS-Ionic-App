@@ -4,7 +4,7 @@
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
-  "linuxAndroidStudioPath": "/home/harshith/.local/share/JetBrains/Toolbox/apps/AndroidStudio/ch-0/192.6392135/bin/studio.sh",
+  "linuxAndroidStudioPath": "/home/harshith/.local/share/JetBrains/Toolbox/apps/AndroidStudio/ch-0/193.6514223/bin/studio.sh",
   "plugins": {
     "SplashScreen": {
       "showSpinner": true,

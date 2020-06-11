@@ -188,7 +188,7 @@ export class MyLocksPage implements OnInit {
   }
 
   async startWebcam(lockId: string) {
-    await Browser.open({ url: 'https://mohan226.ddns.net:8080/' });
+    await Browser.open({ url: 'https://mohan226.ddns.net:8080/stream/webrtc' });
   }
 
   async unlock(lockId: string) {
